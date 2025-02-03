@@ -7,6 +7,25 @@ type Props = {
   className?: string;
 };
 
+export const ButtonInfo = ({
+  children,
+  type,
+  onClick,
+  className,
+}: Props) => {
+  return (
+    <button
+      className={`text-sm bg-teal-600 text-white rounded-md py-2 px-4 hover:bg-teal-700 font-bold ${className}`}
+      type={type}
+      onClick={() => {
+        if (onClick) onClick();
+      }}
+    >
+      {children}
+    </button>
+  );
+};
+
 export const ButtonSuccess = ({
   children,
   type,

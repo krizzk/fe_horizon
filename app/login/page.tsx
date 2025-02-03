@@ -14,6 +14,7 @@ const LoginPage = () => {
 const [password, setPassword] = useState<string>("")
 const [showPassword, setShowPassword] = useState<boolean>(false)
 const router = useRouter()
+
 const handleSubmit = async (e: FormEvent) => {
     try {
         e.preventDefault()
@@ -28,8 +29,8 @@ const handleSubmit = async (e: FormEvent) => {
             storeCookie("id", data.data.id)
             storeCookie("name", data.data.name)
             storeCookie("role", data.data.role)
-            let role  = data.data.role
-            if (role === `MANAGER`) setTimeout(() => router.replace(`/manager/dashboard`),1000)
+            let role = data.data.role
+            if (role === `MANAGER`) setTimeout(() => router.replace(`/manager/dashboard`), 1000)
             else if (role === `CASHIER`) setTimeout(() => router.replace(`/cashier/dashboard`), 1000)
         }
         else toast(data.message, { hideProgressBar: true, containerId: `toastLogin`, type: "warning" })
@@ -38,7 +39,7 @@ const handleSubmit = async (e: FormEvent) => {
         toast(`Something wrong`, { hideProgressBar: true, containerId: `toastLogin`, type: "error" })
     }
 }
-    // kode selanjutnya disini
+
     return (
         <div className="w-screen h-screen bg-login bg-cover">
             <ToastContainer containerId={`toastLogin`} />

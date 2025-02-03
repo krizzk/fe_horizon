@@ -76,3 +76,20 @@ body {
   transition: box-shadow 0.3s ease-in-out;
   animation: color-change-box 2s infinite;
 }
+
+/* styles/globals.css */
+.app-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90vh; /* Membuat kontainer setinggi viewport */
+  background-color: transparent; /* Warna latar belakang untuk kontras */
+}
+
+.glow-onHover {
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.glow-onHover:hover {
+  animation: color-change-box 2s infinite;
+}

@@ -6,6 +6,7 @@ import { AlertInfo } from "@/components/alert";
 import Image from "next/image";
 import Search from "./search";
 import AddMenu from "./addMenu";
+import EditMenu from "./editMenu";
 
 const getMenu = async (search: string): Promise<IMenu[]> => {
   try {
@@ -87,6 +88,9 @@ const MenuPage = async ({ searchParams }: { searchParams: { [key: string]: strin
                   </div>
                   <div className="w-full md:w-2/12 p-2">
                     <small className="text-sm font-bold text-yellow-500">Action</small><br />
+                    <div className="flex gap-1">
+                          <EditMenu selectedMenu={data} />
+                      </div>
                   </div>
                 </div>
               ))}

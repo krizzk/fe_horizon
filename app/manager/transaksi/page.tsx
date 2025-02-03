@@ -1,4 +1,4 @@
-'use client'
+"use client"
 import { useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
 import Link from 'next/link';
