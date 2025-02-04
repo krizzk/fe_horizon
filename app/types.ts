@@ -21,4 +21,3 @@ export interface IMenu {
     createdAt : string,
     updatedAt : string
  }
- 

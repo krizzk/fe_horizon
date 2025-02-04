@@ -6,7 +6,7 @@ import { AlertInfo } from "@/components/alert";
 import Image from "next/image";
 import Search from "./search";
 import AddUser from "./addUser";
-// import EditUser from "./editUser";
+import EditUser from "./editUser";
 
 const getUser = async (search: string): Promise<IUser[]> => {
   try {
@@ -28,9 +28,9 @@ const UserPage = async ({ searchParams }: { searchParams: { [key: string]: strin
 
   const role = (role: string): React.ReactNode => {
     if (role === "MANAGER") {
-      return <span className="bg-blue-100 text-blue-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300">Manager</span>;
+      return <span className="bg-blue-100 text-blue-800 text-sm font-bold me-2 px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300">Manager</span>;
     }
-    return <span className="bg-green-100 text-green-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Cashier</span>;
+    return <span className="bg-green-100 text-green-800 text-sm font-bold me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Cashier</span>;
   };
 
   return (
@@ -58,12 +58,9 @@ const UserPage = async ({ searchParams }: { searchParams: { [key: string]: strin
           <>
             <div className="m-2">
               {user.map((data, index) => (
-                <div key={`keyUser${index}`} className={`flex flex-wrap shadow m-2 text-black`}>
+                <div key={`keyUser${index}`} className={`font-semibold flex flex-wrap shadow m-2 text-black justify-between items-center bg-white rounded-lg p-3 border-t-4 border-t-primary`}>
                   <div className="w-full md:w-1/12 p-2">
-                    <small className="text-sm font-bold text-yellow-500">Profile Picture</small><br />
-                    {/* <div className="flex gap-1">
-                        <EditUser selectedUser={data} />
-                    </div> */}
+                    <small className="text-sm font-bold text-blue-500">Profile Picture</small><br />
                     {data.profile_picture ? (
                       <Image width={40} height={40} src={`${BASE_IMAGE_PROFILE}/${data.profile_picture}`} className="rounded-sm overflow-hidden" alt="preview" unoptimized />
                     ) : (
@@ -71,7 +68,7 @@ const UserPage = async ({ searchParams }: { searchParams: { [key: string]: strin
                     )}
                   </div>
                   <div className="w-full md:w-2/12 p-2">
-                    <small className="text-sm font-bold text-yellow-500">Name</small> <br />
+                    <small className="text-sm font-bold text-green-500">Name</small> <br />
                     {data.name}
                   </div>
                   <div className="w-full md:w-2/12 p-2">
@@ -79,11 +76,14 @@ const UserPage = async ({ searchParams }: { searchParams: { [key: string]: strin
                     {data.email}
                   </div>
                   <div className="w-full md:w-1/12 p-2">
-                    <small className="text-sm font-bold text-yellow-500">Role</small> <br />
+                    <small className="text-sm font-bold text-red-500 ">Role</small> <br />
                     {role(data.role)}
                   </div>
                   <div className="w-full md:w-2/12 p-2">
-                    <small className="text-sm font-bold text-yellow-500">Action</small><br />
+                    <small className="text-sm font-bold text-purple-500">Action</small><br />
+                      <div className="flex gap-1">
+                            <EditUser selectedUser={data} />
+                        </div>
                   </div>
                 </div>
               ))}

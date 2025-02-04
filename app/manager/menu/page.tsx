@@ -39,31 +39,31 @@ const MenuPage = async ({ searchParams }: { searchParams: { [key: string]: strin
   return (
     <div>
       <div className="m-2 bg-white rounded-lg p-3 border-t-4 border-t-primary shadow-md">
-        <h4 className="text-xl font-bold mb-2 text-gray-900">Menu Data</h4>
+        <h4 className="text-xl font-bold mb-2 text-gray-900">Menu data</h4>
         <p className="text-sm text-secondary mb-4 text-gray-900">
-          This page displays menu data, allowing menus to view details, search, and manage menu items by adding, editing, or deleting them.
+          This page displays menu data, allowing managers to view details, search, and manage menu accounts by adding, editing, or deleting them.
         </p>
         <div className="flex justify-between items-center mb-4">
           {/* Search Bar */}
           <div className="flex items-center w-full max-w-md flex-grow text-black">
             <Search url={`/manager/menu`} search={search} />
           </div>
-          {/* Add Menu Button */}
+          {/* Add menu Button */}
           <div className="ml-4">
             <AddMenu />
           </div>
         </div>
         {menu.length == 0 ? (
-          <AlertInfo title="informasi">
+          <AlertInfo title="Information">
             No data Available
           </AlertInfo>
         ) : (
           <>
             <div className="m-2">
               {menu.map((data, index) => (
-                <div key={`keyPrestasi${index}`} className={`flex flex-wrap shadow m-2 text-black`}>
+                <div key={`keyMenu${index}`} className={`flex flex-wrap shadow m-2 text-black justify-between items-center bg-white rounded-lg p-3 border-t-4 border-t-primary`}>
                   <div className="w-full md:w-1/12 p-2">
-                    <small className="text-sm font-bold text-yellow-500">Picture</small><br />
+                    <small className="text-sm font-bold text-yellow-400">Profile Picture</small><br />
                     {data.picture ? (
                       <Image width={40} height={40} src={`${BASE_IMAGE_MENU}/${data.picture}`} className="rounded-sm overflow-hidden" alt="preview" unoptimized />
                     ) : (
@@ -71,24 +71,20 @@ const MenuPage = async ({ searchParams }: { searchParams: { [key: string]: strin
                     )}
                   </div>
                   <div className="w-full md:w-2/12 p-2">
-                    <small className="text-sm font-bold text-yellow-500">Name</small> <br />
+                    <small className="text-sm font-bold text-yellow-400">Name</small> <br />
                     {data.name}
                   </div>
-                  <div className="w-full md:w-1/12 p-2">
-                    <small className="text-sm font-bold text-yellow-500">Price</small> <br />
+                  <div className="w-full md:w-2/12 p-2">
+                    <small className="text-sm font-bold text-yellow-400">price</small> <br />
                     {data.price}
                   </div>
-                  <div className="w-full md:w-5/12 p-2">
-                    <small className="text-sm font-bold text-yellow-500">Description</small> <br />
-                    {data.description}
-                  </div>
                   <div className="w-full md:w-1/12 p-2">
-                    <small className="text-sm font-bold text-yellow-500">Category</small> <br />
+                    <small className="text-sm font-bold text-yellow-400">category</small> <br />
                     {category(data.category)}
                   </div>
                   <div className="w-full md:w-2/12 p-2">
-                    <small className="text-sm font-bold text-yellow-500">Action</small><br />
-                    <div className="flex gap-1">
+                    <small className="text-sm font-bold text-yellow-400">Action</small><br />
+                      <div className="flex gap-1">
                           <EditMenu selectedMenu={data} />
                       </div>
                   </div>
