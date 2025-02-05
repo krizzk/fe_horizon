@@ -5,6 +5,7 @@ type Props = {
   type: "button" | "submit" | "reset";
   onClick?: () => void;
   className?: string;
+  disabled?: boolean;
 };
 
 export const ButtonInfo = ({
@@ -64,18 +65,35 @@ export const ButtonWarning = ({
   );
 };
 
-export const ButtonDanger = ({ children, type, onClick, className }: Props) => {
-  return (
-    <button
-      className={`text-sm bg-red-600 text-white rounded-md py-2 px-4 hover:bg-red-700 font-bold ${className}`}
-      type={type}
-      onClick={() => {
-        if (onClick) onClick();
-      }}
-    >
-      {children}
-    </button>
-  );
+export const ButtonDanger = ({ children, type, onClick, className, disabled }: Props) => {
+  const disable = disabled === true
+  if(disable) {
+    return (
+      <button
+        className={`text-sm bg-red-600 text-white rounded-md py-2 px-4 hover:bg-red-700 font-bold ${className}`}
+        type={type}
+        disabled
+        onClick={() => {
+          if (onClick) onClick();
+        }}
+      >
+        {children}
+      </button>
+    );
+  } else {
+    return (
+      <button
+        className={`text-sm bg-red-600 text-white rounded-md py-2 px-4 hover:bg-red-700 font-bold ${className}`}
+        type={type}
+        onClick={() => {
+          if (onClick) onClick();
+        }}
+      >
+        {children}
+      </button>
+    );
+    
+  }
 };
 
 // Button Primary
@@ -84,19 +102,36 @@ export const ButtonPrimary = ({
   type,
   onClick,
   className,
+  disabled
 }: Props) => {
-  return (
-    <button
-      className={`text-sm bg-blue-600 text-white rounded-md py-2 px-4 hover:bg-blue-700 font-bold ${className}`}
-      type={type}
-      onClick={() => {
-        if (onClick) onClick();
-      }}
-    >
-      {children}
-    </button>
-  );
-};
+  const disable = disabled === true
+  if(disable) {
+    return (
+      <button
+        className={`text-sm bg-blue-600 text-white rounded-md py-2 px-4 hover:bg-blue-700 font-bold ${className}`}
+        type={type}
+        disabled
+        onClick={() => {
+          if (onClick) onClick();
+        }}
+      >
+        {children}
+      </button>
+    );
+  } else {
+    return (
+      <button
+        className={`text-sm bg-blue-600 text-white rounded-md py-2 px-4 hover:bg-blue-700 font-bold ${className}`}
+        type={type}
+        onClick={() => {
+          if (onClick) onClick();
+        }}
+      >
+        {children}
+      </button>
+    )
+    };
+  }
 
 
 

@@ -3,7 +3,7 @@ import { getCookies } from "@/lib/server-cookies";
 import { BASE_API_URL, BASE_IMAGE_PROFILE } from "@/global";
 import { get } from "@/lib/api-bridge";
 import { AlertInfo } from "@/components/alert";
-import Image from "next/image";
+// import Image from "next/image";
 import Search from "./search";
 import AddUser from "./addUser";
 import EditUser from "./editUser";
@@ -40,7 +40,7 @@ const UserPage = async ({ searchParams }: { searchParams: { [key: string]: strin
         <p className="text-sm text-secondary mb-4 text-gray-900">
           This page displays user data, allowing managers to view details, search, and manage user accounts by adding, editing, or deleting them.
         </p>
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex mb-4">
           {/* Search Bar */}
           <div className="flex items-center w-full max-w-md flex-grow text-black">
             <Search url={`/manager/user`} search={search} />
@@ -62,7 +62,7 @@ const UserPage = async ({ searchParams }: { searchParams: { [key: string]: strin
                   <div className="w-full md:w-1/12 p-2">
                     <small className="text-sm font-bold text-blue-500">Profile Picture</small><br />
                     {data.profile_picture ? (
-                      <Image width={40} height={40} src={`${BASE_IMAGE_PROFILE}/${data.profile_picture}`} className="rounded-sm overflow-hidden" alt="preview" unoptimized />
+                      <img width={40} height={40} src={`${BASE_IMAGE_PROFILE}/${data.profile_picture}`} className="rounded-sm overflow-hidden" alt="preview" />
                     ) : (
                       <span>No image</span>
                     )}

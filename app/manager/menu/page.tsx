@@ -7,6 +7,7 @@ import Image from "next/image";
 import Search from "./search";
 import AddMenu from "./addMenu";
 import EditMenu from "./editMenu";
+import DeleteMenu from "./deleteMene";
 
 const getMenu = async (search: string): Promise<IMenu[]> => {
   try {
@@ -38,7 +39,7 @@ const MenuPage = async ({ searchParams }: { searchParams: { [key: string]: strin
 
   return (
     <div>
-      <div className="m-2 bg-white rounded-lg p-3 border-t-4 border-t-primary shadow-md">
+      <div className="m-2 bg-white rounded-lg p-3 border-t-4 border-t-primary shadow-md"> 
         <h4 className="text-xl font-bold mb-2 text-gray-900">Menu data</h4>
         <p className="text-sm text-secondary mb-4 text-gray-900">
           This page displays menu data, allowing managers to view details, search, and manage menu accounts by adding, editing, or deleting them.
@@ -61,7 +62,7 @@ const MenuPage = async ({ searchParams }: { searchParams: { [key: string]: strin
           <>
             <div className="m-2">
               {menu.map((data, index) => (
-                <div key={`keyMenu${index}`} className={`flex flex-wrap shadow m-2 text-black justify-between items-center bg-white rounded-lg p-3 border-t-4 border-t-primary`}>
+                <div key={`keyMenu${index}`} className={`font-semibold flex flex-wrap shadow m-2 text-black justify-between items-center bg-white rounded-lg p-3 border-t-4 border-t-primary`}>
                   <div className="w-full md:w-1/12 p-2">
                     <small className="text-sm font-bold text-yellow-400">Profile Picture</small><br />
                     {data.picture ? (
@@ -71,21 +72,22 @@ const MenuPage = async ({ searchParams }: { searchParams: { [key: string]: strin
                     )}
                   </div>
                   <div className="w-full md:w-2/12 p-2">
-                    <small className="text-sm font-bold text-yellow-400">Name</small> <br />
+                    <small className="text-sm font-bold text-green-500">Name</small> <br />
                     {data.name}
                   </div>
                   <div className="w-full md:w-2/12 p-2">
-                    <small className="text-sm font-bold text-yellow-400">price</small> <br />
+                    <small className="text-sm font-bold text-yellow-500">price</small> <br />
                     {data.price}
                   </div>
                   <div className="w-full md:w-1/12 p-2">
-                    <small className="text-sm font-bold text-yellow-400">category</small> <br />
+                    <small className="text-sm font-bold text-red-500">category</small> <br />
                     {category(data.category)}
                   </div>
                   <div className="w-full md:w-2/12 p-2">
-                    <small className="text-sm font-bold text-yellow-400">Action</small><br />
+                    <small className="text-sm font-bold text-purple-500">Action</small><br />
                       <div className="flex gap-1">
                           <EditMenu selectedMenu={data} />
+                          <DeleteMenu selectedMenu={data} />
                       </div>
                   </div>
                 </div>
