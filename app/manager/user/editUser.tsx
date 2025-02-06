@@ -46,6 +46,7 @@ const EditUser = ({ selectedUser }: { selectedUser: IUser }) => {
         setIsShow(false);
         if (toast) {
           toast(data?.message, { hideProgressBar: true, containerId: `toastUser`, type: `success` });
+          setTimeout(() => router.refresh(), 1000)
         }
       } else {
         if (toast) {

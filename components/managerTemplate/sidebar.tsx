@@ -39,20 +39,20 @@ const Sidebar = ({ children, id, title, menuList }: ManagerProp) => {
   return (
     <div className="w-full min-h-dvh bg-white">
       {/* header section */}
-      <header className="flex justify-between items-center p-4 mb-0 bg-yellow-500 shadow-md">
-        <div className="flex gap-2">
+      <header className="flex justify-between items-center p-4 mb-0 bg-yellow-500 border-b border-primary">
+        <div className="flex gap-2 ">
           <button onClick={() => setIsShow(true)}>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-black bg-yellow-500">
               <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m16.5 4.5h16.5" />
             </svg>
           </button>
-          <h1 className="font-bold text-xl text-white">
+          <h1 className="font-bold text-xl text-black">
             {title}
           </h1>
         </div>
 
         <div className="relative">
-          <button onClick={toggleDropdown} className="flex itemscenter space-x-2 text-white">
+          <button onClick={toggleDropdown} className="flex itemscenter space-x-2 text-black">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25 2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
             </svg>
