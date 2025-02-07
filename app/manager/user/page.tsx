@@ -7,6 +7,7 @@ import { AlertInfo } from "@/components/alert";
 import Search from "./search";
 import AddUser from "./addUser";
 import EditUser from "./editUser";
+import DeleteUser from "./deleteUser";
 
 const getUser = async (search: string): Promise<IUser[]> => {
   try {
@@ -88,6 +89,7 @@ const UserPage = async ({ searchParams }: { searchParams: { [key: string]: strin
                     <small className="text-sm font-bold text-purple-500">Action</small><br />
                       <div className="flex gap-1">
                             <EditUser selectedUser={data} />
+                            <DeleteUser selectedUser={data} />
                         </div>
                   </div>
                 </div>
