@@ -12,6 +12,7 @@ export const metadata = {
  const RootLayout = ({ children }: PropsLayout) => {
     return (
         <div>{children}</div>
+        
     )
  }
  
