@@ -6,7 +6,7 @@ import { getCookie } from "@/lib/client-cookies";
 import { useRouter } from "next/navigation";
 import { FormEvent, useRef, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
-import { ButtonPrimary, ButtonDanger, ButtonInfo } from "@/components/button";
+import { ButtonPrimary, ButtonDanger, ButtonInfo, ButtonWarning } from "@/components/button";
 import { InputGroupComponent } from "@/components/inputComponents";
 import Modal from "@/components/modal";
 import Select from "@/components/select";
@@ -15,7 +15,7 @@ import FileInput from "@/components/fileInput";
 const EditUser = ({ selectedUser }: { selectedUser: IUser }) => {
   const [isShow, setIsShow] = useState<boolean>(false);
   const [user, setUser] = useState<IUser>({ ...selectedUser });
-  const [clicked, setClicked] = useState(false)
+  const [showPasswordInput, setShowPasswordInput] = useState<boolean>(false)
   const router = useRouter();
   const TOKEN = getCookie("token") || "";
   const [file, setFile] = useState<File | null>(null);
@@ -26,6 +26,11 @@ const EditUser = ({ selectedUser }: { selectedUser: IUser }) => {
     setIsShow(true);
     if (formRef.current) formRef.current.reset();
   };
+
+  const editPassword =() => {
+    setUser({ ...user, password: "" });
+    setShowPasswordInput(true);
+  }
 
   const handleSubmit = async (e: FormEvent) => {
     try {
@@ -99,16 +104,22 @@ const EditUser = ({ selectedUser }: { selectedUser: IUser }) => {
               onChange={val => setUser({ ...user, email: val })}
               required={true} label="Email" />
 
-            <InputGroupComponent id={`password`} type="password" value={user.password}
-              onChange={val => setUser({ ...user, password: val })}
-              required={true} label="Password" />
-
             <Select id={`role`} value={user.role} label="Role"
               required={true} onChange={val => setUser({ ...user, role: val })}>
               <option value="">--- Select Role ---</option>
               <option value="MANAGER">Manager</option>
               <option value="CASHIER">Cashier</option>
             </Select>
+            
+            {!showPasswordInput ? (
+              <ButtonWarning type="button" onClick={() => editPassword()}>
+                Edit Password
+              </ButtonWarning>
+            ) : (
+              <InputGroupComponent id={`password`} type="text" value={user.password}
+                onChange={val => setUser({ ...user, password: val })}
+                required={true} label="Password" />
+                )}
 
             <FileInput acceptTypes={["application/pdf", "image/png", "image/jpeg", "image/jpg"]} id="profile_picture"
               label="Upload Profile Picture (Max 2MB, PDF/JPG/JPEG/PNG)" onChange={f => setFile(f)} required={false} />
