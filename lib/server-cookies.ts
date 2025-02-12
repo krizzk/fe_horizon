@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+
 export const getCookies = async (key: string): Promise<string> => {
     return (await cookies()).get(key)?.value || ""
  }

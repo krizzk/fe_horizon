@@ -1,13 +1,64 @@
 'use client';
+import React, { useEffect, useState } from 'react';
 import { FaUsers, FaClipboardList, FaMoneyBillWave, FaChartLine } from 'react-icons/fa';
 import Link from 'next/link';
 import Image from 'next/image';
 import Profile from "../../../public/image/restaurant.jpg";
+import { BASE_API_URL } from "@/global";
+import { getCookie } from "@/lib/client-cookies"; // Mengimpor fungsi getCookie dari client-cookies
+import { get } from "@/lib/api-bridge";
+
+const getUserCount = async () => {
+  try {
+    const TOKEN = getCookie("token") ?? ""; // Menggunakan nilai default jika token undefined
+    const url = `${BASE_API_URL}/user`;
+    const { data } = await get(url, TOKEN);
+    if (data?.status) {
+      return data.data.length;
+    }
+    return 0;
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+    return 0;
+  }
+};
+
+const getMenuCount = async () => {
+  try {
+    const TOKEN = getCookie("token") ?? ""; // Menggunakan nilai default jika token undefined
+    const url = `${BASE_API_URL}/menu`;
+    const { data } = await get(url, TOKEN);
+    if (data?.status) {
+      return data.data.length;
+    }
+    return 0;
+  } catch (error) {
+    console.error('Error fetching menu data:', error);
+    return 0;
+  }
+};
 
 const Dashboard = () => {
+  const [userCount, setUserCount] = useState(0);
+  const [menuCount, setMenuCount] = useState(0);
+
+  useEffect(() => {
+    const fetchUserCount = async () => {
+      const count = await getUserCount();
+      setUserCount(count);
+    };
+
+    const fetchMenuCount = async () => {
+      const count = await getMenuCount();
+      setMenuCount(count);
+    };
+
+    fetchUserCount();
+    fetchMenuCount();
+  }, []);
+
   return (
     <div className="flex">
-      {/* Assuming your sidebar is already in place */}
       <div className="flex-grow min-h-screen bg-gray-100">
         <header className="bg-white shadow">
           <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
@@ -18,7 +69,6 @@ const Dashboard = () => {
         </header>
         <main>
           <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-            {/* Main content */}
             <div className="px-4 py-6 sm:px-0">
               <div className="rounded-lg bg-white p-6 shadow-lg">
                 <div className="flex items-center justify-between mb-6">
@@ -34,20 +84,18 @@ const Dashboard = () => {
                     </div>
                     <div>
                       <p className="text-sm font-medium text-gray-600">Users</p>
-                      <p className="text-lg font-semibold text-gray-700">4</p>
+                      <p className="text-lg font-semibold text-gray-700">{userCount}</p>
                     </div>
                   </div>
-
                   <div className="flex items-center p-4 bg-white rounded-lg shadow-xs">
                     <div className="p-3 mr-4 bg-green-500 text-white rounded-full">
                       <FaClipboardList size={24} />
                     </div>
                     <div>
                       <p className="text-sm font-medium text-gray-600">Menus</p>
-                      <p className="text-lg font-semibold text-gray-700">9</p>
+                      <p className="text-lg font-semibold text-gray-700">{menuCount}</p>
                     </div>
                   </div>
-
                   <div className="flex items-center p-4 bg-white rounded-lg shadow-xs">
                     <div className="p-3 mr-4 bg-yellow-500 text-white rounded-full">
                       <FaMoneyBillWave size={24} />
@@ -57,7 +105,6 @@ const Dashboard = () => {
                       <p className="text-lg font-semibold text-gray-700">$0</p>
                     </div>
                   </div>
-
                   <div className="flex items-center p-4 bg-white rounded-lg shadow-xs">
                     <div className="p-3 mr-4 bg-red-500 text-white rounded-full">
                       <FaChartLine size={24} />
@@ -91,7 +138,6 @@ const Dashboard = () => {
                 </div>
               </div>
             </div>
-            {/* /End main content */}
           </div>
         </main>
       </div>

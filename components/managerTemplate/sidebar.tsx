@@ -1,11 +1,13 @@
 'use client';
-import { ReactNode, useState } from "react";
+import { ReactNode, useState, useEffect } from "react";
 import Image from "next/image";
 import MenuItem from "./menuItem";
 import Logo from '../../public/image/restaurant.jpg';
 import Profile from '../../public/image/profile.jpg';
-import { removeCookie } from "@/lib/client-cookies";
+import { removeCookie, getCookie } from "@/lib/client-cookies";
 import { useRouter } from "next/navigation";
+import { IUser } from "@/app/types";
+import { BASE_IMAGE_PROFILE } from "@/global";
 
 type MenuType = {
   id: string,
@@ -17,17 +19,28 @@ type MenuType = {
 type ManagerProp = {
   children: ReactNode,
   id: string,
+  user: IUser | null,
   title: string,
   menuList: MenuType[]
 };
 
-const Sidebar = ({ children, id, title, menuList }: ManagerProp) => {
+const Sidebar = ({ children, id, title, menuList, user }: ManagerProp) => {
   const [isShow, setIsShow] = useState<boolean>(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [userName, setUserName] = useState<string>("");
   const router = useRouter();
+
+  useEffect(() => {
+    const name = getCookie("name"); // Ambil nama pengguna dari cookie
+    if (name) {
+      setUserName(name); // Setel nama pengguna ke state
+    }
+  }, []);
+
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
+
   const handleLogout = () => {
     removeCookie("token");
     removeCookie("id");
@@ -96,9 +109,15 @@ const Sidebar = ({ children, id, title, menuList }: ManagerProp) => {
 
         {/* user section */}
         <div className="w-full mt-10 mb-6 bg-primary text-black p-3 flex gap-2 items-center ">
-          <Image src={Profile} alt="Profile" width={40} height={40} className="rounded-full" />
+          {user?.profile_picture ? (
+            <Image src={`${BASE_IMAGE_PROFILE}/${user?.profile_picture}`} alt="Profile" width={40} height={40} className="rounded-full" />
+          ) : (
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+            </svg>
+          )}
           <div className="text-sm font-semibold">
-            Krizzna
+            {userName}
           </div>
         </div>
         {/* end user section */}

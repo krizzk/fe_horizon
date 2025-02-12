@@ -104,13 +104,11 @@ const EditMenu = ({ selectedMenu }: { selectedMenu: IMenu }) => {
                            <option value="DRINK">Drink</option>
                        </Select>
 
-
                        <FileInput acceptTypes={["application/pdf", "image/png", "image/jpeg", "image/jpg"]} id="profile_picture"
                            label="Unggah Foto (Max 2MB, PDF/JPG/JPEG/PNG)" onChange={f => setFile(f)} required={false} />
                           
                    </div>
                    {/* end modal body */}
-
 
                    {/* modal footer */}
                    <div className="w-full p-5 flex rounded-b-2xl shadow">
