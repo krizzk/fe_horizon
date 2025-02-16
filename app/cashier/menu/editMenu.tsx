@@ -2,7 +2,7 @@
 import { IMenu } from "@/app/types"
 import { BASE_API_URL } from "@/global"
 import { put } from "@/lib/api-bridge"
-import { getCookie } from "@/lib/client-cookies"
+import { getCookie } from "@/lib/client-cookie"
 import { useRouter } from "next/navigation"
 import { FormEvent, useRef, useState } from "react"
 import { toast, ToastContainer } from "react-toastify"

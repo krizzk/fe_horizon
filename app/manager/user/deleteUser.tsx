@@ -2,7 +2,7 @@
 import { IUser } from "@/app/types"
 import { BASE_API_URL } from "@/global"
 import { drop } from "@/lib/api-bridge"
-import { getCookie } from "@/lib/client-cookies"
+import { getCookie } from "@/lib/client-cookie"
 import { useRouter } from "next/navigation"
 import { FormEvent, useState } from "react"
 import { toast, ToastContainer } from "react-toastify"

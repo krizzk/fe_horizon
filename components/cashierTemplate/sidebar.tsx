@@ -4,7 +4,7 @@ import Image from "next/image";
 import MenuItem from "./menuItem";
 import Logo from '../../public/image/restaurant.jpg';
 import Profile from '../../public/image/profile.jpg';
-import { removeCookie, getCookie } from "@/lib/client-cookies";
+import { removeCookie, getCookie } from "@/lib/client-cookie";
 import { useRouter } from "next/navigation";
 import { IUser } from "@/app/types";
 import { BASE_IMAGE_PROFILE } from "@/global";

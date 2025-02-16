@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Profile from "../../../public/image/restaurant.jpg";
 import { BASE_API_URL } from "@/global";
-import { getCookie } from "@/lib/client-cookies"; // Mengimpor fungsi getCookie dari client-cookies
+import { getCookie } from "@/lib/client-cookie"; // Mengimpor fungsi getCookie dari client-cookies
 import { get } from "@/lib/api-bridge";
 
 const getUserCount = async () => {
