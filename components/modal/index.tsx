@@ -3,7 +3,6 @@ import { ReactNode } from "react"
 
 const Modal = ({ children, isShow, onClose }: { children: ReactNode, isShow: boolean, onClose: (status: boolean) => void }) => {
 
-
     const handleClickOutside = (event: React.MouseEvent<HTMLDivElement>) => {
         if (event.target === event.currentTarget) onClose(false)
     }
@@ -16,4 +15,4 @@ const Modal = ({ children, isShow, onClose }: { children: ReactNode, isShow: boo
         </div>
     )
  }
- export default Modal
+export default Modal

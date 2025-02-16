@@ -1,4 +1,4 @@
-import ManagerTemplate from "@/components/managerTemplate"
+import CashierTemplat from "@/components/cashierTemplate"
 import MenuList from "../menuList"
 
 export const metadata = {
@@ -11,9 +11,9 @@ type PropsLayout = {
 }
 const RootLayout = ({ children }: PropsLayout) => {
     return (
-        <ManagerTemplate title="Pesan makanan" id="pesan_makanan" menuList={MenuList}>
+        <CashierTemplat title="Pesan makanan" id="pesan_makanan" menuList={MenuList}>
             {children}
-        </ManagerTemplate>
+        </CashierTemplat>
     )
 }
 export default RootLayout

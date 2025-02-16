@@ -29,12 +29,12 @@ const MenuPage = async ({ searchParams }: { searchParams: { [key: string]: strin
 
   const category = (cat: string): React.ReactNode => {
     if (cat === "FOOD") {
-      return <span className="bg-blue-100 text-blue-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300">Food</span>;
+      return <span className="bg-blue-100 text-blue-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-white">Food</span>;
     }
     if (cat === "SNACK") {
-      return <span className="bg-indigo-100 text-indigo-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-indigo-900 dark:text-indigo-300">Snack</span>;
+      return <span className="bg-indigo-100 text-indigo-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-indigo-900 dark:text-white">Snack</span>;
     }
-    return <span className="bg-purple-100 text-purple-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-purple-900 dark:text-purple-300">Drink</span>;
+    return <span className="bg-purple-100 text-purple-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-purple-900 dark:text-white">Drink</span>;
   };
 
   return (
@@ -47,7 +47,7 @@ const MenuPage = async ({ searchParams }: { searchParams: { [key: string]: strin
         <div className="flex justify-between items-center mb-4">
           {/* Search Bar */}
           <div className="flex items-center w-full max-w-md flex-grow text-black">
-            <Search url={`/manager/menu`} search={search} />
+            <Search url={`/cashier/menu`} search={search} />
           </div>
           {/* Add menu Button */}
           <div className="ml-4">
@@ -83,13 +83,13 @@ const MenuPage = async ({ searchParams }: { searchParams: { [key: string]: strin
                     <small className="text-sm font-bold text-red-500">category</small> <br />
                     {category(data.category)}
                   </div>
-                  <div className="w-full md:w-2/12 p-2">
+                  {/* <div className="w-full md:w-2/12 p-2">
                     <small className="text-sm font-bold text-purple-500">Action</small><br />
                       <div className="flex gap-1">
-                          {/* <EditMenu selectedMenu={data} />
-                          <DeleteMenu selectedMenu={data} /> */}
+                          <EditMenu selectedMenu={data} />
+                          <DeleteMenu selectedMenu={data} />
                       </div>
-                  </div>
+                  </div> */}
                 </div>
               ))}
             </div>

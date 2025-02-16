@@ -1,4 +1,4 @@
-import ManagerTemplate from "@/components/managerTemplate"
+import CashierTemplate from "@/components/cashierTemplate"
 import MenuList from "../menuList"
 import { ToastContainer } from "react-toastify"
 
@@ -12,10 +12,10 @@ type PropsLayout = {
 }
 const RootLayout = ({ children }: PropsLayout) => {
     return (
-        <ManagerTemplate title="Menu" id="Menu" menuList={MenuList}>
+        <CashierTemplate title="Menu" id="Menu" menuList={MenuList}>
             {children}
                 <ToastContainer containerId={`toastMenu`} />
-        </ManagerTemplate>
+        </CashierTemplate>
     )
 }
 export default RootLayout

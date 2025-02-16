@@ -1,12 +1,13 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { FaUsers, FaClipboardList, FaMoneyBillWave, FaChartLine, FaHistory } from 'react-icons/fa';
+import { FaUsers, FaClipboardList, FaMoneyBillWave, FaChartLine, FaHistory, FaStar, FaBell, FaBellSlash, FaRegBell, FaClock } from 'react-icons/fa';
 import Link from 'next/link';
 import Image from 'next/image';
 import Profile from "../../../public/image/restaurant.jpg";
 import { BASE_API_URL } from "@/global";
 import { getCookie } from "@/lib/client-cookies"; // Mengimpor fungsi getCookie dari client-cookies
 import { get } from "@/lib/api-bridge";
+import { FaBellConcierge, FaClockRotateLeft, FaKickstarter } from 'react-icons/fa6';
 
 const getUserCount = async () => {
   try {
@@ -89,7 +90,7 @@ const Dashboard = () => {
                   </div>
                   <div className="flex items-center p-4 bg-white rounded-lg shadow-xs">
                     <div className="p-3 mr-4 bg-green-500 text-white rounded-full">
-                      <FaClipboardList size={24} />
+                      <FaStar size={24} />
                     </div>
                     <div>
                       <p className="text-sm font-medium text-gray-600">Menu favourite</p>
@@ -98,20 +99,20 @@ const Dashboard = () => {
                   </div>
                   <div className="flex items-center p-4 bg-white rounded-lg shadow-xs">
                     <div className="p-3 mr-4 bg-yellow-500 text-white rounded-full">
-                      <FaMoneyBillWave size={24} />
+                      <FaBellConcierge size={24} />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-600">Income</p>
-                      <p className="text-lg font-semibold text-gray-700">$0</p>
+                      <p className="text-sm font-medium text-gray-600">Pesan makanan</p>
+                      <p className="text-lg font-semibold text-gray-700">0</p>
                     </div>
                   </div>
                   <div className="flex items-center p-4 bg-white rounded-lg shadow-xs">
                     <div className="p-3 mr-4 bg-red-500 text-white rounded-full">
-                      <FaChartLine size={24} />
+                      <FaClockRotateLeft size={24} />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-600">Growth</p>
-                      <p className="text-lg font-semibold text-gray-700">0%</p>
+                      <p className="text-sm font-medium text-gray-600">History</p>
+                      <p className="text-lg font-semibold text-gray-700">0</p>
                     </div>
                   </div>
                 </div>
@@ -123,15 +124,15 @@ const Dashboard = () => {
                       Menus
                     </Link>
                     <Link href="/cashier/menu_favorite" className="flex items-center px-4 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600">
-                      <FaClipboardList className="mr-2" />
+                      <FaStar className="mr-2" />
                       menu favourite
                     </Link>
                     <Link href="/cashier/pesan_makanan" className="flex items-center px-4 py-2 bg-yellow-500 text-white rounded-lg shadow-md hover:bg-yellow-600">
-                      <FaMoneyBillWave className="mr-2" />
+                      <FaBellConcierge className="mr-2" />
                       pesan makanan
                     </Link>
                     <Link href="/cashier/history" className="flex items-center px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600">
-                      <FaChartLine className="mr-2" />
+                      <FaClockRotateLeft className="mr-2" />
                       history pemesana
                     </Link>
                   </div>
