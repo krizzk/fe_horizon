@@ -103,34 +103,34 @@ body {
 }
 
 .menu-card {
-  border: 1px solid #ccc;
+  border: 1px solid #c8c8c8;
+  background: #f0f0f0;
   border-radius: 8px;
   width: 240px;
   margin: 20px;
-  padding: 20px;
+  padding: 0; /* Remove padding to make the image fill the card */
   text-align: center;
+  overflow: hidden; /* Ensure the image does not overflow the card */
 }
 
 .menu-card .image-container {
-  min-height: 260px; /* Sesuaikan dengan tinggi gambar yang diinginkan */
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 100%;
+  height: 0;
+  padding-bottom: 100%; /* Aspect ratio of 1:1 (square) */
+  position: relative;
+}
+
+.menu-card .image-container img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensure the image covers the entire container */
 }
 
 .menu-card .image-border {
-  width: 100%;
-  border-bottom: 2px solid #ccc; /* Sesuaikan dengan border yang diinginkan */
-  margin-bottom: 20px; /* Sesuaikan dengan margin yang diinginkan */
-}
-
-.menu-card .text-container {
-  min-height: 50px; /* Sesuaikan dengan tinggi minimum teks */
-}
-
-.menu-card img {
-  max-width: 100%;
-  height: auto;
+  display: none; /* Hide the border under the image */
 }
 
 .menu-item {
@@ -144,8 +144,9 @@ body {
   justify-content: center;
   align-items: center;
   border: 1px solid #ccc;
+  background-color: #fff;
   border-radius: 4px;
-  padding: 5px;
+  padding: 3px;
 }
 
 .qty-buttons button {
@@ -153,4 +154,31 @@ body {
   padding: 5px 10px;
   border: none;
   background: none;
+}
+
+.qty-buttons button:hover {
+  background-color: #d4d4d4;
+}
+
+.category-button {
+  margin-left: 10px;
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.category-button:hover {
+  background-color: #e0e0e0;
+}
+
+.category-button:active {
+  background-color: #d0d0d0;
+}
+
+.category-button.active {
+  background-color: #4CAF50; /* Ganti warna sesuai keinginan Anda */
+  color: white;
 }
