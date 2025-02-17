@@ -1,13 +1,12 @@
+
+import React from 'react';
 import { IMenu } from "@/app/types";
 import { getCookies } from "@/lib/server-cookies";
-import { BASE_API_URL, BASE_IMAGE_MENU } from "@/global";
+import { BASE_API_URL } from "@/global";
 import { get } from "@/lib/api-bridge";
 import { AlertInfo } from "@/components/alert";
-import Image from "next/image";
 import Search from "./search";
-// import AddMenu from "./addMenu";
-// import EditMenu from "./editMenu";
-// import DeleteMenu from "./deleteMenu";
+import MenuList from './card';
 
 const getMenu = async (search: string): Promise<IMenu[]> => {
   try {
@@ -25,17 +24,7 @@ const getMenu = async (search: string): Promise<IMenu[]> => {
 
 const MenuPage = async ({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) => {
   const search = searchParams.search ? searchParams.search.toString() : ``;   
-  const menu: IMenu[] = await getMenu(search);
-
-  const category = (cat: string): React.ReactNode => {
-    if (cat === "FOOD") {
-      return <span className="bg-blue-100 text-blue-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-white">Food</span>;
-    }
-    if (cat === "SNACK") {
-      return <span className="bg-indigo-100 text-indigo-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-indigo-900 dark:text-white">Snack</span>;
-    }
-    return <span className="bg-purple-100 text-purple-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-purple-900 dark:text-white">Drink</span>;
-  };
+  const menu = await getMenu(search);
 
   return (
     <div>
@@ -54,46 +43,14 @@ const MenuPage = async ({ searchParams }: { searchParams: { [key: string]: strin
             {/* <AddMenu /> */}
           </div>
         </div>
-        {menu.length == 0 ? (
+        {menu.length === 0 ? (
           <AlertInfo title="Information">
             No data Available
           </AlertInfo>
         ) : (
-          <>
-            <div className="m-2">
-              {menu.map((data, index) => (
-                <div key={`keyMenu${index}`} className={`font-semibold flex flex-wrap shadow m-2 text-black justify-between items-center bg-white rounded-lg p-3 border-t-4 border-t-primary`}>
-                  <div className="w-full md:w-1/12 p-2">
-                    <small className="text-sm font-bold text-yellow-400">Profile Picture</small><br />
-                    {data.picture ? (
-                      <Image width={40} height={40} src={`${BASE_IMAGE_MENU}/${data.picture}`} className="rounded-sm overflow-hidden" alt="preview" unoptimized />
-                    ) : (
-                      <span>No image</span>
-                    )}
-                  </div>
-                  <div className="w-full md:w-2/12 p-2">
-                    <small className="text-sm font-bold text-green-500">Name</small> <br />
-                    {data.name}
-                  </div>
-                  <div className="w-full md:w-2/12 p-2">
-                    <small className="text-sm font-bold text-yellow-500">price</small> <br />
-                    {data.price}
-                  </div>
-                  <div className="w-full md:w-1/12 p-2">
-                    <small className="text-sm font-bold text-red-500">category</small> <br />
-                    {category(data.category)}
-                  </div>
-                  {/* <div className="w-full md:w-2/12 p-2">
-                    <small className="text-sm font-bold text-purple-500">Action</small><br />
-                      <div className="flex gap-1">
-                          <EditMenu selectedMenu={data} />
-                          <DeleteMenu selectedMenu={data} />
-                      </div>
-                  </div> */}
-                </div>
-              ))}
-            </div>
-          </>
+          <div className="m-2">
+            <MenuList search={search} />
+          </div>
         )}
       </div>
     </div>

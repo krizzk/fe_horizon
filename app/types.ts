@@ -1,3 +1,16 @@
+
+export interface IUser {
+  id: number;
+  uuid: string;
+  name: string;
+  email: string;
+  password: string;
+  profile_picture: string;
+  role: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface IMenu {
   id: number;
   uuid: string;
@@ -10,14 +23,10 @@ export interface IMenu {
   updatedAt: string;
 }
 
-export interface IUser {
-  id: number;
-  uuid: string;
+export interface ICart {
+  menuId: number;
   name: string;
-  email: string;
-  password: string;
-  profile_picture: string;
-  role: string;
-  createdAt: string;
-  updatedAt: string;
+  price: number;
+  quantity: number;
+  note: string;
 }

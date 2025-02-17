@@ -1,5 +1,4 @@
 "use client"
-
 import { BASE_API_URL } from "@/global"
 import { storeCookie } from "@/lib/client-cookie"
 import axios from "axios"
@@ -47,7 +46,7 @@ const LoginPage = () => {
         // Jika audio sedang diputar, hentikan
         if (!audio.paused) {
             audio.pause();
-            audio.currentTime = 0; // Reset waktu ke awal
+            audio.currentTime = 45; // Reset waktu ke awal
         }
         audio.play().catch(error => {
             console.error("Error playing audio:", error);
