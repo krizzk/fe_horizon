@@ -99,7 +99,7 @@ const MenuList: React.FC<MenuListProps> = ({ search, selectedCategory }) => {
 
   return (
     <div className="menu-list flex flex-wrap justify-start">
-      {filteredMenuData.map((menu) => (
+      {filteredMenuData.map((menu) => ( 
         <MenuCard key={menu.id} menu={menu} />
       ))}
     </div>
