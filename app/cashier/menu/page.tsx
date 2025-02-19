@@ -6,9 +6,11 @@ import { AlertInfo } from "@/components/alert";
 import Search from "./search";
 import MenuList from './card';
 import useMenuData from './useMenuData';
+import { useSearchParams } from 'next/navigation';
 
-const MenuPage: React.FC<{ searchParams: { [key: string]: string | string[] | undefined } }> = ({ searchParams }) => {
-  const search = searchParams.search ? searchParams.search.toString() : ``;   
+const MenuPage: React.FC = () => {
+  const searchParams = useSearchParams()
+  const search = searchParams.get("search") || ""
   const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
 
   const menu = useMenuData(search);

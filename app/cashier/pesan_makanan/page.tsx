@@ -12,6 +12,7 @@ import Button  from "./button"
 import CardComponent from "./card"
 import Search from "./search";
 import { FaBowlRice } from "react-icons/fa6"
+import { useSearchParams } from "next/navigation"
 
 const getMenu = async (search: string, token: string): Promise<IMenu[]> => {
   try {
@@ -44,8 +45,9 @@ const categories = [
 
 //{tesssss searchParams: { [key: string]: string | string[] | undefined } }
 //{tesssss searchParams: { [key: string]: string | string[] | undefined } }
-const MenuPage: React.FC<{ searchParams: { [key: string]: string | string[] | undefined } }> = ({ searchParams }) => {
-  const search = searchParams.search ? searchParams.search.toString() : ``;   
+const MenuPage: React.FC = () => {
+  const searchParams = useSearchParams()
+  const search = searchParams.get("search") || ""
 
   const [menu, setMenu] = useState<IMenu[]>([])
   const [cart, setCart] = useState<ICart[]>([])

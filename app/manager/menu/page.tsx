@@ -24,7 +24,7 @@ const getMenu = async (search: string): Promise<IMenu[]> => {
 };
 
 const MenuPage = async ({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) => {
-  const search = searchParams.search ? searchParams.search.toString() : ``;   
+  const search = searchParams.search ? searchParams.search.toString() : ``;
   const menu: IMenu[] = await getMenu(search);
 
   const category = (cat: string): React.ReactNode => {

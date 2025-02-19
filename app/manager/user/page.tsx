@@ -24,7 +24,8 @@ const getUser = async (search: string): Promise<IUser[]> => {
 };
 
 const UserPage = async ({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) => {
-  const search = searchParams.search ? searchParams.search.toString() : ``;
+  const searchParamsResolved = await searchParams;
+  const search = searchParamsResolved.search ? searchParamsResolved.search.toString() : ``;
   const user: IUser[] = await getUser(search);
 
   const role = (role: string): React.ReactNode => {
