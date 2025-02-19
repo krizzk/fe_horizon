@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { FaUsers, FaClipboardList, FaMoneyBillWave, FaChartLine, FaHistory, FaStar, FaBell, FaBellSlash, FaRegBell, FaClock } from 'react-icons/fa';
+import {  FaClipboardList, FaStar,} from 'react-icons/fa';
 import Link from 'next/link';
 import Image from 'next/image';
 import Profile from "../../../public/image/restaurant.jpg";

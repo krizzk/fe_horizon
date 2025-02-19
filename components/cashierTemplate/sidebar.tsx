@@ -86,6 +86,7 @@ const Sidebar = ({ children, id, title, menuList, user }: CashierProp) => {
         {children}
       </div>
       {/* end content section */}
+      
       {/* sidebar section */}
       <div className={`backdrop-blur-md flex flex-col w-2/3 md:w-1/3 lg:w-1/5 h-full fixed top-0 right-full transition-transform z-50 bg-gray-100 border-r border-primary rounded-r-[20px] bg-opacity-60 ${isShow ? `translate-x-full sidebar-glow` : ``}`}>
         {/* close button */}

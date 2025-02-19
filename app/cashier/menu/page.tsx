@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import { IMenu } from "@/app/types";
-import { getCookies } from "@/lib/server-cookies";
+// import { getCookies } from "@/lib/server-cookies"; 
 import { AlertInfo } from "@/components/alert";
 import Search from "./search";
 import MenuList from './card';
@@ -33,6 +33,7 @@ const MenuPage: React.FC<{ searchParams: { [key: string]: string | string[] | un
           <div className="ml-4">
             {/* <AddMenu /> */}
           </div>
+
           {/* Category Filter */}
           <div className="flex items-center">
             <button 

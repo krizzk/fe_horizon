@@ -29,4 +29,5 @@ export interface ICart {
   price: number;
   quantity: number;
   note: string;
+  picture: string;
 }

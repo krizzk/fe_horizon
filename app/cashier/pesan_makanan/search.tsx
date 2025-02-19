@@ -22,10 +22,9 @@ type Props = {
  
     return (
         <input type="text" id="keyword" value={keyword} onChange={e => setKeyword(e.target.value)}
-            className={`text-sm w-full rounded-md p-2 bg-slate-50 border border-secondary focus:border-primary focus:outline-none`}
-            placeholder="Search" onKeyUp={handleSearch} />
+            className={`w-full pl-10 pr-4 py-2 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500`}
+            placeholder="Search your food" onKeyUp={handleSearch} />
     )
  }
  export default Search
  
-  

@@ -7,19 +7,19 @@ import { get } from '@/lib/api-bridge';
 import { getCookie } from "@/lib/client-cookie";
 import useMenuData from './useMenuData';
 
-const getMenu = async (search: string): Promise<IMenu[]> => {
-  try {
-    const TOKEN = await getCookie("token") || "";
-    const url = `${BASE_API_URL}/menu?search=${search}`;
-    const { data } = await get(url, TOKEN);
-    let result: IMenu[] = [];
-    if (data?.status) result = [...data.data];
-    return result;
-  } catch (error) {
-    console.log(error);
-    return [];
-  }
-};
+// const getMenu = async (search: string): Promise<IMenu[]> => {
+//   try {
+//     const TOKEN = await getCookie("token") || "";
+//     const url = `${BASE_API_URL}/menu?search=${search}`;
+//     const { data } = await get(url, TOKEN);
+//     let result: IMenu[] = [];
+//     if (data?.status) result = [...data.data];
+//     return result;
+//   } catch (error) {
+//     console.log(error);
+//     return [];
+//   }
+// };
 
 interface MenuCardProps {
   menu: IMenu;
@@ -62,11 +62,11 @@ const MenuCard: React.FC<MenuCardProps> = ({ menu }) => {
       <div className="text-center mb-2 ml-2">
         <CategoryBadge category={menu.category} />
       </div>
-      <div className="qty-buttons flex justify-center items-center border border-gray-300 rounded px-2 py-1">
+      {/* <div className="qty-buttons flex justify-center items-center border border-gray-300 rounded px-2 py-1">
         <button onClick={decrementQty}>-</button>
         <span className="mx-2">{quantity}</span>
         <button  onClick={incrementQty}>+</button>
-      </div>
+      </div> */}
     </div>
   );
 };
@@ -82,6 +82,7 @@ const CategoryBadge: React.FC<CategoryBadgeProps> = ({ category }) => {
   if (category === "SNACK") {
     return <span className="bg-indigo-100 text-indigo-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-indigo-900 dark:text-white">Snack</span>;
   }
+
   return <span className="bg-purple-100 text-purple-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-purple-900 dark:text-white">Drink</span>;
 };
 
