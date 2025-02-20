@@ -9,20 +9,6 @@ import { getCookie } from "@/lib/client-cookie"; // Mengimpor fungsi getCookie d
 import { get } from "@/lib/api-bridge";
 import { FaBellConcierge, FaClockRotateLeft, FaKickstarter } from 'react-icons/fa6';
 
-const getUserCount = async () => {
-  try {
-    const TOKEN = getCookie("token") ?? ""; // Menggunakan nilai default jika token undefined
-    const url = `${BASE_API_URL}/user`;
-    const { data } = await get(url, TOKEN);
-    if (data?.status) {
-      return data.data.length;
-    }
-    return 0;
-  } catch (error) {
-    console.error('Error fetching user data:', error);
-    return 0;
-  }
-};
 
 const getMenuCount = async () => {
   try {
@@ -40,21 +26,14 @@ const getMenuCount = async () => {
 };
 
 const Dashboard = () => {
-  const [userCount, setUserCount] = useState(0);
   const [menuCount, setMenuCount] = useState(0);
 
   useEffect(() => {
-    const fetchUserCount = async () => {
-      const count = await getUserCount();
-      setUserCount(count);
-    };
-
     const fetchMenuCount = async () => {
       const count = await getMenuCount();
       setMenuCount(count);
     };
 
-    fetchUserCount();
     fetchMenuCount();
   }, []);
 
@@ -94,7 +73,7 @@ const Dashboard = () => {
                     </div>
                     <div>
                       <p className="text-sm font-medium text-gray-600">Menu favourite</p>
-                      <p className="text-lg font-semibold text-gray-700">{userCount}</p>
+                      <p className="text-lg font-semibold text-gray-700">{0}</p>
                     </div>
                   </div>
                   <div className="flex items-center p-4 bg-white rounded-lg shadow-xs">
