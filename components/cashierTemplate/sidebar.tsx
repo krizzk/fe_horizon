@@ -46,6 +46,7 @@ const Sidebar = ({ children, id, title, menuList, user }: CashierProp) => {
     removeCookie("id");
     removeCookie("name");
     removeCookie("role");
+    removeCookie("cart");
     router.replace(`/login`);
   };
 

@@ -1,16 +1,16 @@
 "use client"
-import { useState, useEffect, useId } from "react"
-import type React from "react"
+import { useState, useEffect, useCallback } from "react"
+import  React from "react"
 import Image from "next/image"
 
-import type { IMenu, ICart } from "../../types"
-import { getCookie } from "@/lib/client-cookie"
+import  { IMenu, ICart } from "../../types"
+import { getCookie, storeCookie, removeCookie } from "@/lib/client-cookie"
 import { BASE_API_URL, BASE_IMAGE_MENU } from "@/global"
-import { get, post } from "@/lib/api-bridge"
+import { get } from "@/lib/api-bridge"
 import { AlertInfo } from "@/components/alert/index"
-import Button  from "./button"
+import Button from "./button"
 import CardComponent from "./card"
-import Search from "./search";
+import Search from "./search"
 import { FaBowlRice } from "react-icons/fa6"
 import { useSearchParams } from "next/navigation"
 
@@ -25,17 +25,6 @@ const getMenu = async (search: string, token: string): Promise<IMenu[]> => {
   }
 }
 
-const saveCartToServer = async (cart: ICart[], token: string) => {
-  try {
-    const url = `${BASE_API_URL}/cart`
-    const formData = new FormData()
-    formData.append("cart", JSON.stringify(cart))
-    await post(url, formData, token)
-  } catch (error) {
-    console.log(error)
-  }
-}
-
 const categories = [
   { id: "ALL", label: "All", icon: "🕒" },
   { id: "FOOD", label: "Food", icon: "🍔" },
@@ -43,8 +32,15 @@ const categories = [
   { id: "SNACK", label: "Snacks", icon: "🍿" },
 ]
 
-//{tesssss searchParams: { [key: string]: string | string[] | undefined } }
-//{tesssss searchParams: { [key: string]: string | string[] | undefined } }
+const formatPrice = (price: number): string => {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(price)
+}
+
 const MenuPage: React.FC = () => {
   const searchParams = useSearchParams()
   const search = searchParams.get("search") || ""
@@ -53,8 +49,11 @@ const MenuPage: React.FC = () => {
   const [cart, setCart] = useState<ICart[]>([])
   const [total, setTotal] = useState<number>(0)
   const [selectedCategory, setSelectedCategory] = useState<string>("ALL")
+  const [isMobile, setIsMobile] = useState<boolean>(false)
 
-  // const orderId = useId()
+  const saveCartToCookies = useCallback((updatedCart: ICart[]) => {
+    storeCookie("cart", JSON.stringify(updatedCart))
+  }, [])
 
   useEffect(() => {
     const token = getCookie("token") || ""
@@ -63,101 +62,112 @@ const MenuPage: React.FC = () => {
       setMenu(data)
     }
     fetchMenu()
+
+    // store cart to cookies
+    const savedCart = getCookie("cart")
+    if (savedCart) {
+      const parsedCart = JSON.parse(savedCart)
+      setCart(parsedCart)
+      const calculatedTotal = parsedCart.reduce((sum: number, item: ICart) => sum + item.price * item.quantity, 0)
+      setTotal(calculatedTotal)
+    }
+
+    // Check if the screen is mobile
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+
+    checkIsMobile()
+    window.addEventListener("resize", checkIsMobile)
+
+    return () => window.removeEventListener("resize", checkIsMobile)
   }, [search])
 
-  const handleAddToCart = (menuItem: IMenu) => {
-    const updatedCart = [...cart]
-    const existingItem = updatedCart.find((item) => item.menuId === menuItem.id)
+  const updateCartAndCookies = useCallback(
+    (newCart: ICart[]) => {
+      setCart(newCart)
+      const newTotal = newCart.reduce((sum, item) => sum + item.price * item.quantity, 0)
+      setTotal(newTotal)
+      saveCartToCookies(newCart)
+    },
+    [saveCartToCookies],
+  )
 
-    if (existingItem) {
-      existingItem.quantity += 1
-    } else {
-      updatedCart.push({
-        menuId: menuItem.id,
-        name: menuItem.name,
-        price: menuItem.price,
-        quantity: 1,
-        note: "",
-        picture: menuItem.picture,
-      })
-    }
+  const handleAddToCart = useCallback(
+    (menuItem: IMenu) => {
+      const updatedCart = [...cart]
+      const existingItem = updatedCart.find((item) => item.menuId === menuItem.id)
 
-    setCart(updatedCart)
-    setTotal((prevTotal) => prevTotal + menuItem.price)
-    const token = getCookie("token") || ""
-    saveCartToServer(updatedCart, token)
-  }
-
-  const handleRemoveFromCart = (menuItem: IMenu) => {
-    const updatedCart = [...cart]
-    const existingItem = updatedCart.find((item) => item.menuId === menuItem.id)
-
-    if (existingItem) {
-      if (existingItem.quantity > 1) {
-        existingItem.quantity -= 1
-        setTotal((prevTotal) => prevTotal - menuItem.price)
+      if (existingItem) {
+        existingItem.quantity += 1
       } else {
-        const index = updatedCart.indexOf(existingItem)
-        updatedCart.splice(index, 1)
-        setTotal((prevTotal) => prevTotal - menuItem.price)
+        updatedCart.push({
+          menuId: menuItem.id,
+          name: menuItem.name,
+          price: menuItem.price,
+          quantity: 1,
+          note: "",
+          picture: menuItem.picture,
+        })
       }
-      setCart(updatedCart)
-      const token = getCookie("token") || ""
-      saveCartToServer(updatedCart, token)
-    }
-  }
 
-  const handleCheckout = () => {
-    alert(`Total: Rp${total} - Proceeding to checkout...`)
-  }
+      updateCartAndCookies(updatedCart)
+    },
+    [cart, updateCartAndCookies],
+  )
 
-  const handleCategoryChange = (category: string) => {
+  const handleRemoveFromCart = useCallback(
+    (menuItem: IMenu) => {
+      const updatedCart = [...cart]
+      const existingItem = updatedCart.find((item) => item.menuId === menuItem.id)
+
+      if (existingItem) {
+        if (existingItem.quantity > 1) {
+          existingItem.quantity -= 1
+        } else {
+          const index = updatedCart.indexOf(existingItem)
+          updatedCart.splice(index, 1)
+        }
+      }
+
+      updateCartAndCookies(updatedCart)
+    },
+    [cart, updateCartAndCookies],
+  )
+
+  const handleCheckout = useCallback(() => {
+    alert(`Total: ${formatPrice(total)} - Proceeding to checkout...`)
+    // Clear cart after checkout
+    setCart([])
+    setTotal(0)
+    removeCookie("cart")
+  }, [total])
+
+  const handleCategoryChange = useCallback((category: string) => {
     setSelectedCategory(category)
-  }
-
-  const formatPrice = (price: number): string => {
-    return new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-    }).format(price);
-};
+  }, [])
 
   const filteredMenu = selectedCategory === "ALL" ? menu : menu.filter((item) => item.category === selectedCategory)
 
   return (
     <div className="max-w-[1400px] mx-auto p-4">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="relative flex-1 max-w-md">
+      <div className="flex flex-col sm:flex-row items-center justify-between mb-6">
+        <div className="relative w-full sm:w-auto sm:flex-1 max-w-md mb-4 sm:mb-0">
           <Search url={`/cashier/pesan_makanan`} search={search} />
         </div>
-        
-        {/* BELL and SETTING */}
-        {/* <div className="flex items-center gap-4">
-          <button className="relative">
-            <Bell className="w-6 h-6 text-gray-600" />
-            <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-white text-xs flex items-center justify-center">
-              1
-            </span>
-          </button>
-          <button>
-            <MoreVertical className="w-6 h-6 text-gray-600" />
-          </button>
-        </div> */}
       </div>
 
       {/* Categories */}
       <div className="mb-8">
         <h2 className="text-xl font-bold mb-4">Categories</h2>
-        <div className="flex gap-3 overflow-x-auto pb-2">
+        <div className="flex flex-wrap gap-3">
           {categories.map((category) => (
             <Button
               key={category.id}
               variant="category"
               onClick={() => handleCategoryChange(category.id)}
-              className={selectedCategory === category.id ? "bg-white shadow-md" : ""}
+              className={`mb-2 ${selectedCategory === category.id ? "bg-white shadow-md" : ""}`}
             >
               <span className="mr-2">{category.icon}</span>
               {category.label}
@@ -167,12 +177,12 @@ const MenuPage: React.FC = () => {
       </div>
 
       {/* Menu Grid and Cart */}
-      <div className="flex gap-6">
-        <div className="flex-1">
+      <div className={`flex ${isMobile ? "flex-col" : "flex-row"} gap-6`}>
+        <div className={`${isMobile ? "w-full" : "flex-1"}`}>
           {menu.length === 0 ? (
             <AlertInfo title="Information">No menu items available</AlertInfo>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredMenu.map((item, index) => (
                 <CardComponent
                   key={`menu-${index}`}
@@ -187,21 +197,11 @@ const MenuPage: React.FC = () => {
         </div>
 
         {/* Order Details */}
-        <div className="w-[380px] shrink-0">
+        <div className={`${isMobile ? "w-full" : "w-[380px] shrink-0"}`}>
           <div className="bg-white rounded-2xl p-6 shadow-sm border">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold">Order Details:</h2>
-              {/* <span className="text-gray-500">#{orderId}</span> */}
             </div>
-
-            {/* Delivery, Dine in, Take Away */}
-            {/* <div className="flex gap-2 mb-6">
-              <Button variant="default" className="bg-green-500">
-                Delivery
-              </Button>
-              <Button variant="default" className="bg-green-500">Dine in</Button>
-              <Button variant="default" className="bg-green-500">Take Away</Button>
-            </div> */}
 
             <div className="space-y-4 mb-6">
               {cart.map((item) => (
@@ -209,21 +209,24 @@ const MenuPage: React.FC = () => {
                   {/* PICTUREEEE */}
                   <div className="relative aspect-square mb-3">
                     {item.picture ? (
-                        <div className="w-16 h-16 bg-[#FFF5EE] rounded-xl overflow-hidden relative">
-                        <Image fill src={`${BASE_IMAGE_MENU}/${item.picture}`} alt={item.name} className="object-cover" />
+                      <div className="w-16 h-16 bg-[#FFF5EE] rounded-xl overflow-hidden relative">
+                        <Image
+                          fill
+                          src={`${BASE_IMAGE_MENU}/${item.picture}`}
+                          alt={item.name}
+                          className="object-cover"
+                        />
                       </div>
                     ) : (
                       <div className="items-center grid justify-items-center w-full h-full rounded-xl">
-                      <FaBowlRice  size={40}/>
+                        <FaBowlRice size={40} />
                       </div>
                     )}
                   </div>
 
                   <div className="flex-1">
                     <h3 className="font-medium">{item.name}</h3>
-                    <p className="text-gray-500">
-                       {item.quantity}
-                    </p>
+                    <p className="text-gray-500">{item.quantity}</p>
                   </div>
                   <p className="font-bold">{formatPrice(item.price * item.quantity)}</p>
                 </div>
@@ -231,10 +234,6 @@ const MenuPage: React.FC = () => {
             </div>
 
             <div className="border-t pt-4">
-              {/* <div className="flex justify-between mb-2">
-                <span className="text-gray-500">Items</span>
-                <span className="font-medium">Rp.{total.toFixed(2)}</span>
-              </div> */}
               <div className="flex justify-between font-bold text-lg">
                 <span>Total</span>
                 <span>{formatPrice(total)}</span>
@@ -253,6 +252,8 @@ const MenuPage: React.FC = () => {
 export default MenuPage
 
 
+
+//old code before refactoring to new code above this line 
 // "use client";
 // import { useState, useEffect } from "react";
 // import { IMenu, ICart } from "@/app/types";

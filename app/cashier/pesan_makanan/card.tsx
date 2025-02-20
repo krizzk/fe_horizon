@@ -1,81 +1,80 @@
-import type React from "react";
-import Image from "next/image";
-import { BASE_IMAGE_MENU } from "@/global";
-import type { ICart, IMenu } from "../../types";
-import Button from "./button";
-import { FaBowlRice } from "react-icons/fa6";
+import type React from "react"
+import Image from "next/image"
+import { BASE_IMAGE_MENU } from "@/global"
+import type { ICart, IMenu } from "../../types"
+import Button from "./button"
+import { FaBowlRice } from "react-icons/fa6"
 
 interface CardComponentProps {
-  data: IMenu;
-  itemInCart: ICart | null;
-  handleAddToCart: (menuItem: IMenu) => void;
-  handleRemoveFromCart: (menuItem: IMenu) => void;
+  data: IMenu
+  itemInCart: ICart | null
+  handleAddToCart: (menuItem: IMenu) => void
+  handleRemoveFromCart: (menuItem: IMenu) => void
 }
 
 interface CategoryBadgeProps {
-  category: string;
+  category: string
 }
 
 const CategoryBadge: React.FC<CategoryBadgeProps> = ({ category }) => {
-  if (category === "FOOD") {
-    return (
-      <span className="bg-blue-100 text-blue-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-white">
-        Food
-      </span>
-    );
+  switch (category) {
+    case "FOOD":
+      return (
+        <span className="bg-yellow-200 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">Food</span>
+      )
+    case "SNACK":
+      return (
+        <span className="bg-orange-200 text-orange-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">Snack</span>
+      )
+    default:
+      return (
+        <span className="bg-amber-300 text-amber-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">Drink</span>
+      )
   }
-  if (category === "SNACK") {
-    return (
-      <span className="bg-indigo-100 text-indigo-950 text-sm font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-indigo-950 dark:text-white">
-        Snack
-      </span>
-    );
-  }
-  return (
-    <span className="bg-purple-100 text-purple-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-purple-900 dark:text-white">
-      Drink
-    </span>
-  );
-};
+}
 
-const CardComponent: React.FC<CardComponentProps> = ({
-  data,
-  itemInCart,
-  handleAddToCart,
-  handleRemoveFromCart,
-}) => {
+const CardComponent: React.FC<CardComponentProps> = ({ data, itemInCart, handleAddToCart, handleRemoveFromCart }) => {
   return (
-    <div className="bg-[#FFF5EE] rounded-2xl p-4 transition-transform hover:scale-[1.02]">
+    <div className="bg-[#FFF5EE] rounded-2xl p-4 transition-transform hover:scale-[1.02] flex flex-col h-full">
       {/* MENU PICTURE */}
       <div className="relative aspect-square mb-3">
-          {data.picture ? (
-            <Image src={`${BASE_IMAGE_MENU}/${data.picture}`} layout="fill" className="object-cover rounded-xl" alt={data.name} />
-          ) : (
-            <div className="items-center grid justify-items-center w-full h-full rounded-xl">
-           <FaBowlRice  size={180}/>
-            <div className="font-semibold text-black rounded-b-lg">
-              No Image
-            </div>
-            </div>
-          )}
+        {data.picture ? (
+          <Image
+            src={`${BASE_IMAGE_MENU}/${data.picture}`}
+            layout="fill"
+            className="object-cover rounded-xl"
+            alt={data.name}
+          />
+        ) : (
+          <div className="items-center grid justify-items-center w-full h-full rounded-xl">
+            <FaBowlRice size={180} />
+            {/* <div className="font-semibold text-black rounded-b-lg">No Image</div> */}
+          </div>
+        )}
       </div>
-      
-      <div className="space-y-1">
-        <div className="flex items-center justify-between">
-          <h3 className="font-semibold ">{data.name}</h3>
-          <CategoryBadge category={data.category} />
+
+      <div className="flex-grow flex flex-col">
+        <div className="mb-2">
+          <div className="flex items-center justify-between mb-1">
+            <h3 className="font-semibold text-lg">{data.name}</h3>
+            <CategoryBadge category={data.category} />
+          </div>
+          <p className="text-sm text-gray-600 line-clamp-2">{data.description}</p>
         </div>
-        <div className="flex items-center justify-between">
-          <p className="font-bold text-gray-900">
+
+        <div className="mt-auto">
+          {/* Price */}
+          <p className="font-bold text-gray-900 mb-2">
             Rp.{data.price.toLocaleString("id-ID", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-            {/* <span className="text-gray-500 line-through text-sm ml-2">Rp.{(data.price * 1.2).toLocaleString("id-ID", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span> */}
           </p>
-          <div className="flex items-center gap-2">
+
+          {/* Quantity controls */}
+          <div className="flex items-center justify-end gap-2">
             {itemInCart && itemInCart.quantity > 0 && (
               <>
                 <Button
                   variant="add"
-                  className="w-6 h-6 rounded-full p-0"
+                  className="w-6 h-6 rounded-full p-0 text-sm bg-red-500 hover:bg-red-600"
                   onClick={() => handleRemoveFromCart(data)}
                 >
                   -
@@ -83,21 +82,22 @@ const CardComponent: React.FC<CardComponentProps> = ({
                 <span className="w-4 text-center">{itemInCart.quantity}</span>
               </>
             )}
-            <Button variant="add" onClick={() => handleAddToCart(data)}>
+            <Button variant="add" className="w-6 h-6 rounded-full p-0 text-sm" onClick={() => handleAddToCart(data)}>
               +
             </Button>
           </div>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CardComponent;
-
-
+export default CardComponent
 
 
+
+
+//old code before refactor to new code above this line
 // import React from "react";
 // import Image from "next/image";
 // import { BASE_IMAGE_MENU } from "@/global";
