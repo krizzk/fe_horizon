@@ -5,14 +5,14 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Profile from "../../../public/image/restaurant.jpg";
 import { BASE_API_URL } from "@/global";
-import { getCookie } from "@/lib/client-cookie"; // Mengimpor fungsi getCookie dari client-cookies
+import { getCookie } from "@/lib/client-cookie"; 
 import { get } from "@/lib/api-bridge";
-import { FaBellConcierge, FaClockRotateLeft, FaKickstarter } from 'react-icons/fa6';
+import { FaBellConcierge, FaClockRotateLeft,} from 'react-icons/fa6';
 
 
 const getMenuCount = async () => {
   try {
-    const TOKEN = getCookie("token") ?? ""; // Menggunakan nilai default jika token undefined
+    const TOKEN = getCookie("token") ?? "";
     const url = `${BASE_API_URL}/menu`;
     const { data } = await get(url, TOKEN);
     if (data?.status) {

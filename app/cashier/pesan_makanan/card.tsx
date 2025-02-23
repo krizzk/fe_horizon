@@ -3,7 +3,7 @@ import Image from "next/image"
 import { BASE_IMAGE_MENU } from "@/global"
 import type { ICart, IMenu } from "../../types"
 import Button from "./button"
-import { FaBowlRice } from "react-icons/fa6"
+import { FaBowlRice } from "react-icons/fa6"  
 
 interface CardComponentProps {
   data: IMenu
