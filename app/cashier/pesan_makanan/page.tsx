@@ -12,6 +12,7 @@ import Button from "./button"
 import CardComponent from "./card"
 import Search from "./search"
 import { FaBowlRice } from "react-icons/fa6"
+import AddOrder from "./add-order"
 
 const categories = [
   { id: "ALL", label: "All", icon: "🕒" },
@@ -47,15 +48,19 @@ const MenuPage: React.FC = () => {
     return cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
   }, [])
 
-  const saveCartToCookies = useCallback((updatedCart: ICart[], updatedNote: string) => {
-    storeCookie("cart", JSON.stringify({ items: updatedCart, note:"hai dari Krizznaa. bisa hapus note ini di code page.tsx pesan makanan line 51 tinggal hapus bagian note:..." })) //hapus dari note sampai " yg di belakang. hapus ini semua note:"hai dari Krizznaa. bisa hapus ini di code page.tsx pesan makanan line 51 tinggal hapus bagian note:..." 
-  }, [])
+  const saveCartToCookies = useCallback(
+    (updatedCart: ICart[]) => {
+      storeCookie("cart", JSON.stringify(updatedCart ))
+    },
+    [generalNote],
+  )
 
   const updateCartAndCookies = useCallback(
     (newCart: ICart[], newNote: string) => {
+      setCart(newCart)
       setGeneralNote(newNote)
       setTotal(calculateTotal(newCart))
-      saveCartToCookies(newCart, newNote)
+      saveCartToCookies(newCart)
     },
     [calculateTotal, saveCartToCookies],
   )
@@ -78,7 +83,7 @@ const MenuPage: React.FC = () => {
               name: menuItem.name,
               price: menuItem.price,
               quantity: 1,
-              note: "",
+              note: "" ,
               picture: menuItem.picture,
             },
           ]
@@ -88,7 +93,7 @@ const MenuPage: React.FC = () => {
         return updatedCart
       })
     },
-    [updateCartAndCookies],
+    [updateCartAndCookies, generalNote],
   )
 
   const handleRemoveFromCart = useCallback(
@@ -128,19 +133,13 @@ const MenuPage: React.FC = () => {
     [cart, updateCartAndCookies],
   )
 
-  const handleCheckout = useCallback(() => {
-    const orderDetails = cart
-      .map(
-        (item) =>
-          `${item.name} (${item.quantity}) - ${formatPrice(item.price * item.quantity)}${item.note ? `\nNote: ${item.note}` : ""}`,
-      )
-      .join("\n\n")
-
-    alert(`Order Details:\n\n${orderDetails}\n\nTotal: ${formatPrice(total)}\n\nProceeding to checkout...`)
+  const handleOrderSuccess = useCallback(() => {
     setCart([])
     setTotal(0)
-    // removeCookie("cart") // Commented out as requested
-  }, [cart, total])
+    setGeneralNote("")
+    // Optionally clear the cart cookie if needed
+    // removeCookie("cart")
+  }, [])
 
   const handleCategoryChange = useCallback((category: string) => {
     setSelectedCategory(category)
@@ -168,11 +167,17 @@ const MenuPage: React.FC = () => {
           if (Array.isArray(parsedCart.items)) {
             setCart(parsedCart.items)
             setTotal(calculateTotal(parsedCart.items))
+            setGeneralNote(parsedCart.note || "")
+          } else if (Array.isArray(parsedCart)) {
+            // Handle old format where cart was stored as an array
+            setCart(parsedCart)
+            setTotal(calculateTotal(parsedCart))
           } else {
+            console.error("Saved cart is not a valid format:", parsedCart)
             setCart([])
             setTotal(0)
+            setGeneralNote("")
           }
-          setGeneralNote(parsedCart.note || "")
         } else {
           console.error("Saved cart is not a valid object:", parsedCart)
           setCart([])
@@ -221,7 +226,7 @@ const MenuPage: React.FC = () => {
       </div>
 
       <div className={`flex ${isMobile ? "flex-col" : "flex-row"} gap-6`}>
-        <div className={`${isMobile ? "w-full" : "flex-1"}`}>
+        <div className={`${isMobile ? "w-full" : "flex-1"} overflow-y-auto`}>
           {menu.length === 0 ? (
             <AlertInfo title="Information">No menu items available</AlertInfo>
           ) : (
@@ -239,13 +244,13 @@ const MenuPage: React.FC = () => {
           )}
         </div>
 
-        <div className={`${isMobile ? "w-full" : "w-[380px] shrink-0"}`}>
+        <div className={`${isMobile ? "w-full" : "w-[380px] shrink-0"} ${!isMobile ? "sticky top-4 self-start" : ""}`}>
           <div className="bg-white rounded-2xl p-6 shadow-sm border">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold">Order Details:</h2>
             </div>
 
-            <div className="space-y-4 mb-6">
+            <div className="space-y-4 mb-6 max-h-[calc(100vh-300px)] overflow-y-auto">
               {cart.map((item) => (
                 <div key={item.menuId} className="flex flex-col gap-2">
                   <div className="flex items-center gap-3">
@@ -279,7 +284,7 @@ const MenuPage: React.FC = () => {
                       rows={2}
                       className="w-full px-3 py-2 text-sm text-gray-700 border rounded-lg focus:outline-none pr-16"
                       placeholder="Add a note for this item..."
-                      value={item.note}
+                      value={item.note || ""}
                       onChange={(e) => handleNoteChange(item.menuId, e.target.value)}
                       maxLength={MAX_NOTE_LENGTH}
                     />
@@ -291,15 +296,14 @@ const MenuPage: React.FC = () => {
               ))}
             </div>
 
-            <div className="border-t pt-4">
+            <div className="border-t pt-4 bg-white">
               <div className="flex justify-between font-bold text-lg mb-4">
                 <span>Total</span>
                 <span>{formatPrice(total)}</span>
               </div>
 
-              <Button className="w-full mt-4 bg-orange-500 hover:bg-orange-600" onClick={handleCheckout}>
-                Checkout
-              </Button>
+              {/* Replace the Button with AddOrder component */}
+              <AddOrder cart={cart} total={total} onOrderSuccess={handleOrderSuccess} formatPrice={formatPrice} />
             </div>
           </div>
         </div>
@@ -310,242 +314,3 @@ const MenuPage: React.FC = () => {
 
 export default MenuPage
 
-
-
-
-//old code before refactoring to new code above this line 
-// "use client";
-// import { useState, useEffect } from "react";
-// import { IMenu, ICart } from "@/app/types";
-// import { getCookie, storeCookie } from "@/lib/client-cookie";
-// import { BASE_API_URL } from "@/global";
-// import { get, post } from "@/lib/api-bridge"; // Assuming you have a post method for API requests
-// import { AlertInfo } from "@/components/alert/index";
-// import Search from "./search";
-// import CardComponent from "./card";
-// import { useSearchParams } from "next/navigation";
-
-// const getMenu = async (search: string, token: string): Promise<IMenu[]> => {
-//   try {
-//     const url = `${BASE_API_URL}/menu?search=${search}`;
-//     const { data } = await get(url, token);
-//     return data?.status ? data.data : [];
-//   } catch (error) {
-//     console.log(error);
-//     return [];
-//   }
-// };
-
-// const saveCartToServer = async (cart: ICart[], token: string) => {
-//   try {
-//     const url = `${BASE_API_URL}/cart`;
-//     const formData = new FormData();
-//     formData.append("cart", JSON.stringify(cart)); // Serialize cart array to JSON string
-//     await post(url, formData, token);
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
-
-// const MenuPage = () => {
-//   const searchParams = useSearchParams(); // Menggunakan hook untuk mengambil search params
-//   const search = searchParams.get("search") || ""; // Mengambil nilai parameter search
-
-//   const [menu, setMenu] = useState<IMenu[]>([]);
-//   const [cart, setCart] = useState<ICart[]>([]);
-//   const [total, setTotal] = useState<number>(0);
-//   const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
-
-//   useEffect(() => {
-//     const token = getCookie("token") || "";
-//     const fetchMenu = async () => {
-//       const data = await getMenu(search, token);
-//       setMenu(data);
-//     };
-//     fetchMenu();
-//   }, [search]);
-
-//   useEffect(() => {
-//     const savedCart = getCookie("cart");
-//     if (savedCart) {
-//       const parsedCart = JSON.parse(savedCart);
-//       setCart(parsedCart);
-//       const totalAmount = parsedCart.reduce((acc: number, item: ICart) => acc + item.price * item.quantity, 0);
-//       setTotal(totalAmount);
-//     }
-//   }, []);
-
-//   const renderCategory = (cat: string): React.ReactNode => {
-//     switch (cat) {
-//       case "FOOD":
-//         return (
-//           <span className="bg-green-500 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md hover:shadow-lg transition-all duration-300">
-//             Food
-//           </span>
-//         );
-//       case "SNACK":
-//         return (
-//           <span className="bg-yellow-500 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md hover:shadow-lg transition-all duration-300">
-//             Snack
-//           </span>
-//         );
-//       default:
-//         return (
-//           <span className="bg-purple-500 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md hover:shadow-lg transition-all duration-300">
-//             Drink
-//           </span>
-//         );
-//     }
-//   };
-
-//   const handleAddToCart = (menuItem: IMenu) => {
-//     const updatedCart = [...cart];
-//     const existingItem = updatedCart.find((item) => item.menuId === menuItem.id);
-
-//     if (existingItem) {
-//       existingItem.quantity += 1;
-//     } else {
-//       updatedCart.push({
-//         menuId: menuItem.id,
-//         name: menuItem.name,
-//         price: menuItem.price,
-//         quantity: 1,
-//         note: "",
-//       });
-//     }
-
-//     setCart(updatedCart);
-//     setTotal((prevTotal) => prevTotal + menuItem.price);
-//     storeCookie("cart", JSON.stringify(updatedCart));
-//     const token = getCookie("token") || "";
-//     saveCartToServer(updatedCart, token);
-//   };
-
-//   const handleRemoveFromCart = (menuItem: IMenu) => {
-//     const updatedCart = [...cart];
-//     const existingItem = updatedCart.find((item) => item.menuId === menuItem.id);
-
-//     if (existingItem) {
-//       if (existingItem.quantity > 1) {
-//         existingItem.quantity -= 1;
-//         setTotal((prevTotal) => prevTotal - menuItem.price);
-//       } else {
-//         const index = updatedCart.indexOf(existingItem);
-//         updatedCart.splice(index, 1);
-//         setTotal((prevTotal) => prevTotal - menuItem.price);
-//       }
-//       setCart(updatedCart);
-//       storeCookie("cart", JSON.stringify(updatedCart));
-//       console.log(updatedCart)
-//       const token = getCookie("token") || "";
-//       saveCartToServer(updatedCart, token);
-//     }
-//   };
-
-//   const handleCheckout = () => {
-//     alert(`Total: Rp${total} - Proceeding to checkout...`);
-//   };
-
-//   const handleCategoryChange = (category: string) => {
-//     setSelectedCategory(category);
-//   };
-
-//   const filteredMenu = selectedCategory === "ALL" ? menu : menu.filter(item => item.category === selectedCategory);
-
-//   return (
-//     <div className="m-4 bg-yellow-50 rounded-lg p-6 border-t-4 border-t-yellow-700 shadow-lg">
-//       <h4 className="text-2xl font-bold text-yellow-700 mb-4">Menu Data</h4>
-//       <p className="text-sm text-yellow-600 mb-6">
-//         This page displays menu data, allowing users to view details, search,
-//         and manage menu items by adding, editing, or deleting them.
-//       </p>
-
-//       <div className="flex justify-between items-center mb-6">
-//         <div className="flex items-center w-full max-w-md">
-//           <Search url={`/cashier/pesan_makanan`} search={search} />
-//         </div>
-//         <div className="flex items-center">
-//           <button 
-//             onClick={() => handleCategoryChange("ALL")} 
-//             className={`category-button ${selectedCategory === "ALL" ? "active" : ""}`}
-//           >
-//             All
-//           </button>
-//           <button 
-//             onClick={() => handleCategoryChange("FOOD")} 
-//             className={`category-button ${selectedCategory === "FOOD" ? "active" : ""}`}
-//           >
-//             Food
-//           </button>
-//           <button 
-//             onClick={() => handleCategoryChange("DRINK")} 
-//             className={`category-button ${selectedCategory === "DRINK" ? "active" : ""}`}
-//           >
-//             Drink
-//           </button>
-//           <button 
-//             onClick={() => handleCategoryChange("SNACK")} 
-//             className={`category-button ${selectedCategory === "SNACK" ? "active" : ""}`}
-//           >
-//             Snack
-//           </button>
-//         </div>
-//       </div>
-
-//       {menu.length === 0 ? (
-//         <AlertInfo title="Informasi">No data available</AlertInfo>
-//       ) : (
-//         <div className="flex">
-//           <div className="w-2/3 grid grid-cols-2 gap-4">
-//             {filteredMenu.map((data, index) => {
-//               const itemInCart = cart.find((item) => item.menuId === data.id) || null;
-//               return (
-//                 <CardComponent
-//                   key={`keyMenu${index}`}
-//                   data={data}
-//                   itemInCart={itemInCart}
-//                   handleAddToCart={handleAddToCart}
-//                   handleRemoveFromCart={handleRemoveFromCart}
-//                   renderCategory={renderCategory}
-//                 />
-//               );
-//             })}
-//           </div>
-
-//           {/* Transaction Section on the right */}
-//           <div className="w-1/3 ml-6">
-//             <h4 className="text-xl font-bold text-yellow-500 mb-4">
-//               Transaction
-//             </h4>
-//             <div className="bg-white p-4 shadow-md rounded-lg">
-//               <div className="flex flex-col gap-2">
-//                 {cart.map((cartItem) => (
-//                   <div key={cartItem.menuId} className="flex justify-between">
-//                     <span>{cartItem.name}</span>
-//                     <span>
-//                       {cartItem.quantity} x Rp{cartItem.price}
-//                     </span>
-//                   </div>
-//                 ))}
-//               </div>
-//               <div className="flex justify-between mt-4">
-//                 <h5 className="text-lg font-semibold">Total</h5>
-//                 <span className="text-lg font-semibold text-red-600">
-//                   Rp{total}
-//                 </span>
-//               </div>
-//               <button
-//                 className="bg-yellow-500 text-white p-2 rounded-full w-full mt-4"
-//                 onClick={handleCheckout}
-//               >
-//                 Checkout
-//               </button>
-//             </div>
-//           </div>
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default MenuPage;

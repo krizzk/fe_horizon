@@ -9,7 +9,6 @@ import { getCookie } from "@/lib/client-cookie";
 import { get } from "@/lib/api-bridge";
 import { FaBellConcierge, FaClockRotateLeft,} from 'react-icons/fa6';
 
-
 const getMenuCount = async () => {
   try {
     const TOKEN = getCookie("token") ?? "";
