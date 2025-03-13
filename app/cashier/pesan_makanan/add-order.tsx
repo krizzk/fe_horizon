@@ -1,5 +1,5 @@
 "use client"
-import type { ICart } from "@/app/types"
+import type { ICart, IOrderPayload, ITableStatus } from "@/app/types"
 import type React from "react"
 
 import { BASE_API_URL } from "@/global"
@@ -21,30 +21,13 @@ interface AddOrderProps {
   formatPrice: (price: number) => string
 }
 
-interface OrderPayload {
-  customer: string
-  table_number: string // Changed to string only
-  payment_method: "CASH" | "QRIS"
-  status: "NEW" | "PAID"
-  orderlists: {
-    menuId: number
-    quantity: number
-    note: string
-  }[]
-}
-
-interface TableStatus {
-  table_number: string
-  status: string
-}
-
 const AddOrder: React.FC<AddOrderProps> = ({ cart, total, onOrderSuccess, formatPrice }) => {
   const [isShow, setIsShow] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [tableStatuses, setTableStatuses] = useState<TableStatus[]>([])
+  const [tableStatuses, setTableStatuses] = useState<ITableStatus[]>([])
   const [tableError, setTableError] = useState<string>("")
 
-  const [orderData, setOrderData] = useState<OrderPayload>({
+  const [orderData, setOrderData] = useState<IOrderPayload>({
     customer: "",
     table_number: "",
     payment_method: "CASH",
@@ -105,7 +88,6 @@ const AddOrder: React.FC<AddOrderProps> = ({ cart, total, onOrderSuccess, format
       setTableError(`Table ${tableNumber} is already in use with status: ${activeTable.status}`)
       return false
     }
-
     setTableError("")
     return true
   }
@@ -157,8 +139,8 @@ const AddOrder: React.FC<AddOrderProps> = ({ cart, total, onOrderSuccess, format
       }
 
       const url = `${BASE_API_URL}/order`
-      const { data } = await post(url, JSON.stringify(payload), TOKEN)
-      
+      const { data } = await post(url, JSON.stringify(payload), TOKEN)      
+
       if (data?.status) {
         setIsShow(false)
         toast(data?.message || "Order created successfully", {
@@ -321,6 +303,7 @@ const AddOrder: React.FC<AddOrderProps> = ({ cart, total, onOrderSuccess, format
 }
 
 export default AddOrder
+
 
 
 // const url = `${BASE_API_URL}/order`
