@@ -79,6 +79,11 @@ const AddOrder: React.FC<AddOrderProps> = ({ cart, total, onOrderSuccess, format
     if (formRef.current) formRef.current.reset()
   }
 
+  // Update the onClose handler to ensure cart state is preserved
+  const handleCancel = () => {
+    setIsShow(false)
+  }
+
   const validateTableNumber = (tableNumber: string): boolean => {
     // Check if table is already in use with NEW or PAID status
     const activeTable = tableStatuses.find(
@@ -139,7 +144,7 @@ const AddOrder: React.FC<AddOrderProps> = ({ cart, total, onOrderSuccess, format
       }
 
       const url = `${BASE_API_URL}/order`
-      const { data } = await post(url, JSON.stringify(payload), TOKEN)      
+      const { data } = await post(url, JSON.stringify(payload), TOKEN)
 
       if (data?.status) {
         setIsShow(false)
@@ -180,17 +185,26 @@ const AddOrder: React.FC<AddOrderProps> = ({ cart, total, onOrderSuccess, format
         Checkout
       </ButtonSuccess>
 
-      <Modal isShow={isShow} onClose={(state) => setIsShow(state)}>
+      <Modal
+        isShow={isShow}
+        onClose={(state) => {
+          // Only close if explicitly set to false
+          if (state === false) {
+            setIsShow(false)
+          }
+        }}
+      >
         <form ref={formRef} onSubmit={handleSubmit}>
           {/* Modal header */}
           <div className="sticky top-0 bg-white px-5 pt-5 pb-3 shadow">
-            <div className="w-full flex items-center">
+            <div className="w-full flex items-center ">
               <div className="flex flex-col">
-                <strong className="font-bold text-2xl">Complete Your Order</strong>
+                <strong className="font-bold text-2xl text-black">Complete Your Order</strong>
                 <small className="text-slate-400 text-sm">Please fill in the order details</small>
               </div>
               <div className="ml-auto">
-                <button type="button" className="text-slate-400" onClick={() => setIsShow(false)} disabled={isLoading}>
+                {/* Replace the button onClick handler */}
+                <button type="button" className="text-slate-400" onClick={handleCancel} disabled={isLoading}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -258,14 +272,14 @@ const AddOrder: React.FC<AddOrderProps> = ({ cart, total, onOrderSuccess, format
             </Select>
 
             {/* Order summary */}
-            <div className="mt-4 border rounded-lg p-4">
-              <h3 className="font-semibold text-lg mb-2">Order Summary</h3>
+            <div className="mt-4 border rounded-lg p-4 text-black">
+              <h3 className="font-semibold text-lg mb-2 text-black">Order Summary</h3>
               <div className="max-h-40 overflow-y-auto mb-3">
                 {cart.map((item) => (
                   <div key={item.menuId} className="flex justify-between items-center py-1 border-b">
                     <div>
-                      <span className="font-medium">{item.name}</span>
-                      <span className="text-sm text-gray-500 block">
+                      <span className="font-medium text-black">{item.name}</span>
+                      <span className="text-sm text-black block">
                         {item.quantity} x {formatPrice(item.price)}
                         {item.note && item.note.trim() !== "" && <span className="italic"> - Note: {item.note}</span>}
                       </span>
@@ -274,7 +288,7 @@ const AddOrder: React.FC<AddOrderProps> = ({ cart, total, onOrderSuccess, format
                   </div>
                 ))}
               </div>
-              <div className="flex justify-between font-bold text-lg">
+              <div className="flex justify-between font-bold text-lg text-black">
                 <span>Total</span>
                 <span>{formatPrice(total)}</span>
               </div>
@@ -285,7 +299,8 @@ const AddOrder: React.FC<AddOrderProps> = ({ cart, total, onOrderSuccess, format
           {/* Modal footer */}
           <div className="w-full p-5 flex rounded-b-2xl shadow">
             <div className="flex ml-auto gap-2">
-              <ButtonDanger type="button" onClick={() => setIsShow(false)} disabled={isLoading}>
+              {/* And update the cancel button in the footer */}
+              <ButtonDanger type="button" onClick={handleCancel} disabled={isLoading}>
                 Cancel
               </ButtonDanger>
               <ButtonPrimary type="submit" disabled={isLoading || !!tableError}>
@@ -304,7 +319,3 @@ const AddOrder: React.FC<AddOrderProps> = ({ cart, total, onOrderSuccess, format
 
 export default AddOrder
 
-
-
-// const url = `${BASE_API_URL}/order`
-// const { data } = await post(url, JSON.stringify(payload), TOKEN)

@@ -196,23 +196,45 @@ const EditOrderModal: React.FC<EditOrderModalProps> = ({ isOpen, onClose, order,
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">Update Status</label>
               <div className="grid grid-cols-3 gap-3">
-                {["NEW", "PAID", "DONE"].map((statusOption) => (
-                  <div
-                    key={statusOption}
-                    className={`relative rounded-lg border-2 ${status === statusOption ? `border-${statusOption === "NEW" ? "red" : statusOption === "PAID" ? "yellow" : "green"}-500 bg-${statusOption === "NEW" ? "red" : statusOption === "PAID" ? "yellow" : "green"}-50` : "border-gray-200"} p-4 cursor-pointer transition-all`}
-                    onClick={() => setStatus(statusOption)}
-                  >
-                    <div className="flex items-center">
-                      <div className={`w-4 h-4 rounded-full mr-2 ${getStatusColor(statusOption)}`}></div>
-                      <span className="font-medium">{statusOption}</span>
-                    </div>
-                    {status === statusOption && (
-                      <div className="absolute top-2 right-2 w-4 h-4 bg-primary rounded-full flex items-center justify-center">
-                        <div className="w-2 h-2 bg-white rounded-full"></div>
+                {["NEW", "PAID", "DONE"].map((statusOption) => {
+                  const isSelected = status === statusOption
+                  let bgColor, borderColor, textColor
+
+                  if (statusOption === "NEW") {
+                    bgColor = isSelected ? "bg-red-200" : "bg-red-50"
+                    borderColor = "border-red-500"
+                    textColor = "text-red-800"
+                  } else if (statusOption === "PAID") {
+                    bgColor = isSelected ? "bg-yellow-200" : "bg-yellow-50"
+                    borderColor = "border-yellow-500"
+                    textColor = "text-yellow-800"
+                  } else {
+                    // DONE
+                    bgColor = isSelected ? "bg-green-200" : "bg-green-50"
+                    borderColor = "border-green-500"
+                    textColor = "text-green-800"
+                  }
+
+                  return (
+                    <div
+                      key={statusOption}
+                      className={`relative rounded-lg border-2 ${isSelected ? borderColor : "border-gray-200"} ${bgColor} p-4 cursor-pointer transition-all hover:opacity-90`}
+                      onClick={() => setStatus(statusOption)}
+                    >
+                      <div className="flex items-center">
+                        <div className={`w-4 h-4 rounded-full mr-2 ${getStatusColor(statusOption)}`}></div>
+                        <span className={`font-medium ${isSelected ? textColor : "text-gray-700"}`}>
+                          {statusOption}
+                        </span>
                       </div>
-                    )}
-                  </div>
-                ))}
+                      {isSelected && (
+                        <div className="absolute top-2 right-2 w-4 h-4 bg-primary rounded-full flex items-center justify-center">
+                          <div className="w-2 h-2 bg-white rounded-full"></div>
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
               </div>
             </div>
 
@@ -269,6 +291,4 @@ const EditOrderModal: React.FC<EditOrderModalProps> = ({ isOpen, onClose, order,
 
 export default EditOrderModal
 
-
-
-// const { data } = await put(url, JSON.stringify(payload), TOKEN)
+  

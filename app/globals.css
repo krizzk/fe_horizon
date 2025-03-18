@@ -1,4 +1,4 @@
-@tailwind base;
+/* @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -78,13 +78,13 @@ body {
   animation: color-change-box 2s infinite;
 }
 
-/* styles/globals.css */
+
 .app-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 90vh; /* Membuat kontainer setinggi viewport */
-  background-color: transparent; /* Warna latar belakang untuk kontras */
+  height: 90vh; 
+  background-color: transparent; 
 }
 
 .glow-onHover {
@@ -108,15 +108,14 @@ body {
   border-radius: 8px;
   width: 240px;
   margin: 20px;
-  padding: 0; /* Remove padding to make the image fill the card */
+  padding: 0; 
   text-align: center;
-  overflow: hidden; /* Ensure the image does not overflow the card */
+  overflow: hidden; 
 }
-
 .menu-card .image-container {
   width: 100%;
   height: 0;
-  padding-bottom: 100%; /* Aspect ratio of 1:1 (square) */
+  padding-bottom: 100%; 
   position: relative;
 }
 
@@ -126,11 +125,10 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Ensure the image covers the entire container */
+  object-fit: cover; 
 }
-
 .menu-card .image-border {
-  display: none; /* Hide the border under the image */
+  display: none; 
 }
 
 .menu-item {
@@ -179,6 +177,241 @@ body {
 }
 
 .category-button.active {
-  background-color: #cabc22; /* Ganti warna sesuai keinginan Anda */
+  background-color: #cabc22; 
+  color: white;
+} */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.bg-login {
+  background-image: url("https://i0.wp.com/imageio.forbes.com/specials-images/imageserve/62fe3a28c22bf8624fce7c7a/0x0.jpg?format=jpg&width=1200");
+}
+
+.bg-dashboard {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url("https://t4.ftcdn.net/jpg/02/75/28/95/360_F_275289557_YptaQZDnGnDkcgm8b792ItXOqvvkTQAr.jpg");
+}
+
+@keyframes color-change {
+  0% {
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.8), 0 0 20px rgba(255, 0, 0, 0.4), 0 0 30px rgba(255, 0, 0, 0.2);
+  }
+  25% {
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.8), 0 0 20px rgba(0, 255, 0, 0.4), 0 0 30px rgba(0, 255, 0, 0.2);
+  }
+  50% {
+    text-shadow: 0 0 10px rgba(0, 0, 255, 0.8), 0 0 20px rgba(0, 0, 255, 0.4), 0 0 30px rgba(0, 0, 255, 0.2);
+  }
+  75% {
+    text-shadow: 0 0 10px rgba(255, 255, 0, 0.8), 0 0 20px rgba(255, 255, 0, 0.4), 0 0 30px rgba(255, 255, 0, 0.2);
+  }
+  100% {
+    text-shadow: 0 0 10px rgba(255, 0, 255, 0.8), 0 0 20px rgba(255, 0, 255, 0.4), 0 0 30px rgba(255, 0, 255, 0.2);
+  }
+}
+
+.glow-on-hover {
+  transition: text-shadow 0.3s ease-in-out;
+}
+
+.glow-on-hover:hover {
+  animation: color-change 2s infinite;
+}
+
+@keyframes color-change-box {
+  0% {
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.5), 0 0 20px rgba(255, 0, 0, 0.3), 0 0 30px rgba(255, 0, 0, 0.1);
+  }
+  25% {
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.5), 0 0 20px rgba(0, 255, 0, 0.3), 0 0 30px rgba(0, 255, 0, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 10px rgba(0, 0, 255, 0.5), 0 0 20px rgba(0, 0, 255, 0.3), 0 0 30px rgba(0, 0, 255, 0.1);
+  }
+  75% {
+    box-shadow: 0 0 10px rgba(255, 255, 0, 0.5), 0 0 20px rgba(255, 255, 0, 0.3), 0 0 30px rgba(255, 255, 0, 0.1);
+  }
+  100% {
+    box-shadow: 0 0 10px rgba(255, 0, 255, 0.5), 0 0 20px rgba(255, 0, 255, 0.3), 0 0 30px rgba(255, 0, 255, 0.1);
+  }
+}
+
+.sidebar-shadow {
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.sidebar-shadow:hover {
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+}
+
+/* Menu item hover animation */
+.menu-item-hover {
+  position: relative;
+  overflow: hidden;
+}
+
+.menu-item-hover::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background-color: #f59e0b;
+  transition: width 0.3s ease;
+}
+
+.menu-item-hover:hover::after {
+  width: 100%;
+}
+
+/* Improved sidebar transition */
+.sidebar-transition {
+  transition: transform 0.3s ease, width 0.3s ease, opacity 0.2s;
+}
+
+.sidebar-enter {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.sidebar-enter-active {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.sidebar-exit {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.sidebar-exit-active {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+/* Other styles preserved from original file */
+.app-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+  background-color: transparent;
+}
+
+.glow-onHover {
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.glow-onHover:hover {
+  animation: color-change-box 2s infinite;
+}
+
+.menu-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.menu-card {
+  border: 1px solid #c8c8c8;
+  background: #f0f0f0;
+  border-radius: 8px;
+  width: 240px;
+  margin: 20px;
+  padding: 0;
+  text-align: center;
+  overflow: hidden;
+}
+
+.menu-card .image-container {
+  width: 100%;
+  height: 0;
+  padding-bottom: 100%;
+  position: relative;
+}
+
+.menu-card .image-container img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.menu-card .image-border {
+  display: none;
+}
+
+.menu-item {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.qty-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  border-radius: 4px;
+  padding: 3px;
+}
+
+.qty-buttons button {
+  margin: 0 5px;
+  padding: 5px 10px;
+  border: none;
+  background: none;
+}
+
+.qty-buttons button:hover {
+  background-color: #d4d4d4;
+}
+
+.category-button {
+  margin-left: 10px;
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.category-button:hover {
+  background-color: #e0e0e0;
+}
+
+.category-button:active {
+  background-color: #d0d0d0;
+}
+
+.category-button.active {
+  background-color: #cabc22;
   color: white;
 }
+

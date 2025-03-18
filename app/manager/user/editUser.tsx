@@ -5,7 +5,7 @@ import { put } from "@/lib/api-bridge";
 import { getCookie } from "@/lib/client-cookie";
 import { useRouter } from "next/navigation";
 import { FormEvent, useRef, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { ButtonPrimary, ButtonDanger, ButtonInfo, ButtonWarning } from "@/components/button";
 import { InputGroupComponent } from "@/components/inputComponents";
 import Modal from "@/components/modal";
@@ -15,68 +15,73 @@ import FileInput from "@/components/fileInput";
 const EditUser = ({ selectedUser }: { selectedUser: IUser }) => {
   const [isShow, setIsShow] = useState<boolean>(false);
   const [user, setUser] = useState<IUser>({ ...selectedUser });
-  const [showPasswordInput, setShowPasswordInput] = useState<boolean>(false)
+  const [showPasswordInput, setShowPasswordInput] = useState<boolean>(false);
   const router = useRouter();
   const TOKEN = getCookie("token") || "";
   const [file, setFile] = useState<File | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
-  
+
   const openModal = () => {
-    setUser({ ...selectedUser });
+    setUser({ ...selectedUser }); // Reset user state ke data awal
+    setShowPasswordInput(false); // Pastikan input password tidak langsung ditampilkan
+    setFile(null); // Reset file input
+    if (formRef.current) formRef.current.reset(); // Reset form
     setIsShow(true);
-    if (formRef.current) formRef.current.reset();
   };
 
-  const editPassword =() => {
-    setUser({ ...user, password: "" });
+  const editPassword = () => {
+    setUser({ ...user, password: "" }); // Kosongkan password untuk input baru
     setShowPasswordInput(true);
-  }
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     try {
       e.preventDefault();
+
       const url = `${BASE_API_URL}/user/${selectedUser.id}`;
       const { name, email, password, role } = user;
       const payload = new FormData();
+
+      // Tambahkan data yang diperlukan ke payload
       payload.append("name", name || "");
       payload.append("email", email || "");
-      payload.append("password", password || "");
       payload.append("role", role || "");
+
+      // Tambahkan password hanya jika pengguna mengubahnya
+      if (showPasswordInput && password) {
+        payload.append("password", password);
+      }
+
+      // Tambahkan file jika ada
       if (file !== null) payload.append("profile_picture", file);
+
       const { data } = await put(url, payload, TOKEN);
-  
+
       console.log("Response Data:", data);
-  
+
       if (data?.status) {
         setIsShow(false);
-        if (toast) {
-          toast(data?.message, { hideProgressBar: true, containerId: `toastUser`, type: `success` });
-          setTimeout(() => router.refresh(), 1000)
-        }
+        toast?.(data?.message, { hideProgressBar: true, containerId: `toastUser`, type: `success` });
+        setTimeout(() => router.refresh(), 1000);
       } else {
-        if (toast) {
-          toast(data?.message, { hideProgressBar: true, containerId: `toastUser`, type: `warning` });
-        }
+        toast?.(data?.message, { hideProgressBar: true, containerId: `toastUser`, type: `warning` });
       }
     } catch (error) {
       console.log("Error:", error);
-      if (toast) {
-        toast(`Something Wrong`, { hideProgressBar: true, containerId: `toastUser`, type: `error` });
-      }
+      toast?.(`Something Wrong`, { hideProgressBar: true, containerId: `toastUser`, type: `error` });
     }
   };
-  
+
   return (
     <div>
-      {/* <ToastContainer containerId={`toastUser`} />  */}
       <ButtonInfo type="button" onClick={() => openModal()}>
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
           <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
         </svg>
       </ButtonInfo>
-      <Modal isShow={isShow} onClose={state => setIsShow(state)}>
+      <Modal isShow={isShow} onClose={(state) => setIsShow(state)}>
         <form ref={formRef} onSubmit={handleSubmit}>
-          {/* modal header */}
+          {/* Modal Header */}
           <div className="sticky top-0 bg-white px-5 pt-5 pb-3 shadow">
             <div className="w-full flex items-center">
               <div className="flex flex-col">
@@ -92,41 +97,37 @@ const EditUser = ({ selectedUser }: { selectedUser: IUser }) => {
               </div>
             </div>
           </div>
-          {/* end modal header */}
-
-          {/* modal body */}
+          {/* Modal Body */}
           <div className="p-5">
-            <InputGroupComponent id={`name`} type="text" value={user.name}
-              onChange={val => setUser({ ...user, name: val })}
+            <InputGroupComponent id="name" type="text" value={user.name}
+              onChange={(val) => setUser({ ...user, name: val })}
               required={true} label="Name" />
 
-            <InputGroupComponent id={`email`} type="email" value={user.email}
-              onChange={val => setUser({ ...user, email: val })}
+            <InputGroupComponent id="email" type="email" value={user.email}
+              onChange={(val) => setUser({ ...user, email: val })}
               required={true} label="Email" />
 
-            <Select id={`role`} value={user.role} label="Role"
-              required={true} onChange={val => setUser({ ...user, role: val })}>
+            <Select id="role" value={user.role} label="Role"
+              required={true} onChange={(val) => setUser({ ...user, role: val })}>
               <option value="">--- Select Role ---</option>
               <option value="MANAGER">Manager</option>
               <option value="CASHIER">Cashier</option>
             </Select>
-            
+
             {!showPasswordInput ? (
               <ButtonWarning type="button" onClick={() => editPassword()}>
                 Edit Password
               </ButtonWarning>
             ) : (
-              <InputGroupComponent id={`password`} type="text" value={user.password}
-                onChange={val => setUser({ ...user, password: val })}
+              <InputGroupComponent id="password" type="text" value={user.password}
+                onChange={(val) => setUser({ ...user, password: val })}
                 required={true} label="Password" />
-                )}
+            )}
 
             <FileInput acceptTypes={["application/pdf", "image/png", "image/jpeg", "image/jpg"]} id="profile_picture"
-              label="Upload Profile Picture (Max 2MB, PDF/JPG/JPEG/PNG)" onChange={f => setFile(f)} required={false} />
+              label="Upload Profile Picture (Max 2MB, PDF/JPG/JPEG/PNG)" onChange={(f) => setFile(f)} required={false} />
           </div>
-          {/* end modal body */}
-
-          {/* modal footer */}
+          {/* Modal Footer */}
           <div className="w-full p-5 flex rounded-b-2xl shadow">
             <div className="flex ml-auto gap-2">
               <ButtonDanger type="button" onClick={() => setIsShow(false)}>
@@ -137,7 +138,6 @@ const EditUser = ({ selectedUser }: { selectedUser: IUser }) => {
               </ButtonPrimary>
             </div>
           </div>
-          {/* end modal footer */}
         </form>
       </Modal>
     </div>

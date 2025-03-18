@@ -48,97 +48,101 @@ const MenuPage: React.FC = () => {
     return cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
   }, [])
 
+  // Fix the saveCartToCookies function by removing generalNote from dependencies
   const saveCartToCookies = useCallback(
     (updatedCart: ICart[]) => {
-      storeCookie("cart", JSON.stringify(updatedCart ))
+      // Always save as a simple array format
+      storeCookie("cart", JSON.stringify(updatedCart))
     },
-    [generalNote],
+    [], // Remove generalNote from dependencies
   )
 
+  // Fix the updateCartAndCookies function to be simpler
   const updateCartAndCookies = useCallback(
-    (newCart: ICart[], newNote: string) => {
+    (newCart: ICart[]) => {
       setCart(newCart)
-      setGeneralNote(newNote)
       setTotal(calculateTotal(newCart))
       saveCartToCookies(newCart)
     },
     [calculateTotal, saveCartToCookies],
   )
 
+  // Fix the handleAddToCart function to remove generalNote dependency
   const handleAddToCart = useCallback(
     (menuItem: IMenu) => {
-      setCart((prevCart) => {
-        const existingItem = prevCart.find((item) => item.menuId === menuItem.id)
-        let updatedCart: ICart[]
+      // Create a new cart array to avoid reference issues
+      const existingItem = cart.find((item) => item.menuId === menuItem.id)
+      let updatedCart: ICart[]
 
-        if (existingItem) {
-          updatedCart = prevCart.map((item) =>
-            item.menuId === menuItem.id ? { ...item, quantity: item.quantity + 1 } : item,
-          )
-        } else {
-          updatedCart = [
-            ...prevCart,
-            {
-              menuId: menuItem.id,
-              name: menuItem.name,
-              price: menuItem.price,
-              quantity: 1,
-              note: "" ,
-              picture: menuItem.picture,
-            },
-          ]
-        }
+      if (existingItem) {
+        updatedCart = cart.map((item) =>
+          item.menuId === menuItem.id ? { ...item, quantity: item.quantity + 1 } : item,
+        )
+      } else {
+        updatedCart = [
+          ...cart,
+          {
+            menuId: menuItem.id,
+            name: menuItem.name,
+            price: menuItem.price,
+            quantity: 1,
+            note: "",
+            picture: menuItem.picture,
+          },
+        ]
+      }
 
-        updateCartAndCookies(updatedCart, generalNote)
-        return updatedCart
-      })
+      // Update state and cookies directly
+      setCart(updatedCart)
+      setTotal(calculateTotal(updatedCart))
+      saveCartToCookies(updatedCart)
     },
-    [updateCartAndCookies, generalNote],
+    [cart, calculateTotal, saveCartToCookies],
   )
 
+  // Fix the handleRemoveFromCart function to remove generalNote dependency
   const handleRemoveFromCart = useCallback(
     (menuItem: IMenu) => {
-      setCart((prevCart) => {
-        const updatedCart = prevCart
-          .map((item) => (item.menuId === menuItem.id ? { ...item, quantity: item.quantity - 1 } : item))
-          .filter((item) => item.quantity > 0)
-        updateCartAndCookies(updatedCart, generalNote)
-        return updatedCart
-      })
+      const updatedCart = cart
+        .map((item) => (item.menuId === menuItem.id ? { ...item, quantity: item.quantity - 1 } : item))
+        .filter((item) => item.quantity > 0)
+
+      // Update state and cookies directly
+      setCart(updatedCart)
+      setTotal(calculateTotal(updatedCart))
+      saveCartToCookies(updatedCart)
     },
-    [updateCartAndCookies, generalNote],
+    [cart, calculateTotal, saveCartToCookies],
   )
 
+  // Fix the handleNoteChange function to remove generalNote dependency
   const handleNoteChange = useCallback(
     (menuId: number, note: string) => {
       if (note.length <= MAX_NOTE_LENGTH) {
         setCart((prevCart) => {
           const updatedCart = prevCart.map((item) => (item.menuId === menuId ? { ...item, note } : item))
-          updateCartAndCookies(updatedCart, generalNote)
+          updateCartAndCookies(updatedCart)
           return updatedCart
         })
       }
     },
-    [updateCartAndCookies, generalNote],
+    [updateCartAndCookies], // Remove generalNote dependency
   )
 
-  const handleGeneralNoteChange = useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      const newNote = e.target.value
-      if (newNote.length <= MAX_NOTE_LENGTH) {
-        setGeneralNote(newNote)
-        updateCartAndCookies(cart, newNote)
-      }
-    },
-    [cart, updateCartAndCookies],
-  )
+  // Fix the handleGeneralNoteChange function
+  const handleGeneralNoteChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newNote = e.target.value
+    if (newNote.length <= MAX_NOTE_LENGTH) {
+      setGeneralNote(newNote)
+    }
+  }, [])
 
   const handleOrderSuccess = useCallback(() => {
     setCart([])
     setTotal(0)
     setGeneralNote("")
-    // Optionally clear the cart cookie if needed
-    // removeCookie("cart")
+    // Clear the cart cookie
+    storeCookie("cart", JSON.stringify([]))
   }, [])
 
   const handleCategoryChange = useCallback((category: string) => {
@@ -163,32 +167,27 @@ const MenuPage: React.FC = () => {
     if (savedCart) {
       try {
         const parsedCart = JSON.parse(savedCart)
-        if (parsedCart && typeof parsedCart === "object") {
-          if (Array.isArray(parsedCart.items)) {
-            setCart(parsedCart.items)
-            setTotal(calculateTotal(parsedCart.items))
-            setGeneralNote(parsedCart.note || "")
-          } else if (Array.isArray(parsedCart)) {
-            // Handle old format where cart was stored as an array
-            setCart(parsedCart)
-            setTotal(calculateTotal(parsedCart))
-          } else {
-            console.error("Saved cart is not a valid format:", parsedCart)
-            setCart([])
-            setTotal(0)
-            setGeneralNote("")
-          }
+        if (Array.isArray(parsedCart)) {
+          // Handle direct array format (preferred)
+          setCart(parsedCart)
+          setTotal(calculateTotal(parsedCart))
+        } else if (parsedCart && typeof parsedCart === "object" && Array.isArray(parsedCart.items)) {
+          // Handle old format with items property
+          setCart(parsedCart.items)
+          setTotal(calculateTotal(parsedCart.items))
+          setGeneralNote(parsedCart.note || "")
+
+          // Convert to new format immediately
+          saveCartToCookies(parsedCart.items)
         } else {
-          console.error("Saved cart is not a valid object:", parsedCart)
+          console.error("Saved cart is not a valid format:", parsedCart)
           setCart([])
           setTotal(0)
-          setGeneralNote("")
         }
       } catch (error) {
         console.error("Error parsing saved cart:", error)
         setCart([])
         setTotal(0)
-        setGeneralNote("")
       }
     }
 
@@ -196,7 +195,7 @@ const MenuPage: React.FC = () => {
     checkIsMobile()
     window.addEventListener("resize", checkIsMobile)
     return () => window.removeEventListener("resize", checkIsMobile)
-  }, [search, calculateTotal])
+  }, [search, calculateTotal, saveCartToCookies])
 
   const filteredMenu = selectedCategory === "ALL" ? menu : menu.filter((item) => item.category === selectedCategory)
 
@@ -209,7 +208,7 @@ const MenuPage: React.FC = () => {
       </div>
 
       <div className="mb-8">
-        <h2 className="text-xl font-bold mb-4">Categories</h2>
+        <h2 className="text-xl text-black font-bold mb-4">Categories</h2>
         <div className="flex flex-wrap gap-3">
           {categories.map((category) => (
             <Button
@@ -247,7 +246,7 @@ const MenuPage: React.FC = () => {
         <div className={`${isMobile ? "w-full" : "w-[380px] shrink-0"} ${!isMobile ? "sticky top-4 self-start" : ""}`}>
           <div className="bg-white rounded-2xl p-6 shadow-sm border">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold">Order Details:</h2>
+              <h2 className="text-xl font-bold text-black">Order Details:</h2>
             </div>
 
             <div className="space-y-4 mb-6 max-h-[calc(100vh-300px)] overflow-y-auto">
@@ -272,12 +271,12 @@ const MenuPage: React.FC = () => {
                     </div>
 
                     <div className="flex-1">
-                      <h3 className="font-medium">{item.name}</h3>
+                      <h3 className="font-medium text-black">{item.name}</h3>
                       <p className="text-gray-500">
                         {item.quantity} x {formatPrice(item.price)}
                       </p>
                     </div>
-                    <p className="font-bold">{formatPrice(item.price * item.quantity)}</p>
+                    <p className="font-bold text-black">{formatPrice(item.price * item.quantity)}</p>
                   </div>
                   <div className="relative">
                     <textarea
@@ -289,7 +288,7 @@ const MenuPage: React.FC = () => {
                       maxLength={MAX_NOTE_LENGTH}
                     />
                     <span className="absolute mr-3 top-2 right-2 text-xs text-gray-400">
-                      {item.note.length}/{MAX_NOTE_LENGTH}
+                      {(item.note || "").length}/{MAX_NOTE_LENGTH}
                     </span>
                   </div>
                 </div>
@@ -297,12 +296,11 @@ const MenuPage: React.FC = () => {
             </div>
 
             <div className="border-t pt-4 bg-white">
-              <div className="flex justify-between font-bold text-lg mb-4">
+              <div className="flex justify-between font-bold text-lg mb-4 text-black">
                 <span>Total</span>
                 <span>{formatPrice(total)}</span>
               </div>
 
-              {/* Replace the Button with AddOrder component */}
               <AddOrder cart={cart} total={total} onOrderSuccess={handleOrderSuccess} formatPrice={formatPrice} />
             </div>
           </div>

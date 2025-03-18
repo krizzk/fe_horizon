@@ -348,7 +348,7 @@ const Dashboard = () => {
 
                   {/* Top 3 Favorite Menu List */}
                   <div className="bg-white rounded-lg p-4 shadow-md">
-                    <h3 className="text-lg font-semibold mb-4">Top 3 Menu Favorit</h3>
+                    <h3 className="text-lg font-semibold mb-4 text-black">Top 3 Menu Favorit</h3>
                     <div className="space-y-4">
                       {favoriteMenus.slice(0, 3).map((menu, index) => (
                         <div
@@ -382,10 +382,10 @@ const Dashboard = () => {
                                 <span
                                   className={`text-xs font-medium px-2 py-0.5 rounded-full ${
                                     index === 0
-                                      ? "bg-yellow-100 text-yellow-800"
+                                      ? "bg-yellow-400 text-yellow-800"
                                       : index === 1
-                                        ? "bg-gray-200 text-gray-800"
-                                        : "bg-amber-100 text-amber-800"
+                                        ? "bg-gray-300 text-gray-800"
+                                        : "bg-amber-700 text-amber-200"
                                   }`}
                                 >
                                   #{index + 1}
