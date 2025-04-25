@@ -247,7 +247,7 @@ const Dashboard = () => {
                   className="rounded-full"
                 />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+              <div className="flex justify-around">
                 <div className="flex items-center p-4 bg-white rounded-lg shadow-xs">
                   <div className="p-3 mr-4 bg-blue-500 text-white rounded-full">
                     <FaClipboardList size={24} />
@@ -257,7 +257,7 @@ const Dashboard = () => {
                     <p className="text-lg font-semibold text-gray-700">{menuCount}</p>
                   </div>
                 </div>
-                <div className="flex items-center p-4 bg-white rounded-lg shadow-xs">
+                {/* <div className="flex items-center p-4 bg-white rounded-lg shadow-xs">
                   <div className="p-3 mr-4 bg-green-500 text-white rounded-full">
                     <FaStar size={24} />
                   </div>
@@ -265,7 +265,7 @@ const Dashboard = () => {
                     <p className="text-sm font-medium text-gray-600">Menu favourite</p>
                     <p className="text-lg font-semibold text-gray-700">{favoriteMenus.length}</p>
                   </div>
-                </div>
+                </div> */}
                 <div className="flex items-center p-4 bg-white rounded-lg shadow-xs">
                   <div className="p-3 mr-4 bg-yellow-500 text-white rounded-full">
                     <FaBellConcierge size={24} />
@@ -299,13 +299,13 @@ const Dashboard = () => {
                     href="/cashier/menu_favorite"
                     className="flex items-center px-4 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600"
                   >
-                    <FaStar className="mr-2" />
+                    {/* <FaStar className="mr-2" />
                     menu favourite
                   </Link>
                   <Link
                     href="/cashier/pesan_makanan"
                     className="flex items-center px-4 py-2 bg-yellow-500 text-white rounded-lg shadow-md hover:bg-yellow-600"
-                  >
+                  > */}
                     <FaBellConcierge className="mr-2" />
                     pesan makanan
                   </Link>

@@ -312,7 +312,7 @@ const AddOrder: React.FC<AddOrderProps> = ({ cart, total, onOrderSuccess, format
         </form>
       </Modal>
 
-      <ToastContainer containerId="toastOrder" position="top-right" />
+      {/* <ToastContainer containerId="toastOrder" position="top-right" /> */}
     </div>
   )
 }

@@ -30,6 +30,7 @@ const LoginPage = () => {
                 storeCookie("id", data.data.id)
                 storeCookie("name", data.data.name)
                 storeCookie("role", data.data.role)
+                storeCookie("profile_picture", data.data.profile_picture)
                 let role = data.data.role
                 if (role === `MANAGER`) setTimeout(() => router.replace(`/manager/dashboard`), 1000)
                 else if (role === `CASHIER`) setTimeout(() => router.replace(`/cashier/dashboard`), 1000)

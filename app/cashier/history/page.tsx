@@ -437,7 +437,7 @@ const HistoryPage = () => {
                                             x{item.quantity}
                                           </div>
                                           <div className="font-semibold text-gray-900">
-                                            {formatPrice(item.quantity * (item.Menu?.price || 0))}
+                                            {formatPrice( (item.Menu?.price || 0))}
                                           </div>
                                         </div>
                                       </motion.div>

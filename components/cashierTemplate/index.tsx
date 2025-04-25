@@ -30,6 +30,13 @@ const CashierTemplate = ({ children, id, title, menuList, user }: CashierProp) =
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [isMobile, setIsMobile] = useState(false)
   const router = useRouter()
+  const [profileUpdateTime, setProfileUpdateTime] = useState<number>(Date.now())
+  const [forceUpdate, setForceUpdate] = useState(0)
+
+  useEffect(() => {
+    // Force a refresh when component mounts
+    setForceUpdate((prev) => prev + 1)
+  }, [])
 
   useEffect(() => {
     const name = getCookie("name")
@@ -60,6 +67,17 @@ const CashierTemplate = ({ children, id, title, menuList, user }: CashierProp) =
   useEffect(() => {
     localStorage.setItem("sidebarOpen", sidebarOpen.toString())
   }, [sidebarOpen])
+
+  useEffect(() => {
+    const handleProfileUpdate = () => {
+      setProfileUpdateTime(Date.now())
+    }
+
+    window.addEventListener("profile-updated", handleProfileUpdate)
+    return () => {
+      window.removeEventListener("profile-updated", handleProfileUpdate)
+    }
+  }, [])
 
   const handleLogout = () => {
     removeCookie("token")
@@ -97,13 +115,21 @@ const CashierTemplate = ({ children, id, title, menuList, user }: CashierProp) =
             <div className="relative h-10 w-10 rounded-full overflow-hidden border-2 border-gray-200">
               {user?.profile_picture ? (
                 <Image
-                  src={`${BASE_IMAGE_PROFILE}/${user.profile_picture}`}
+                  src={`${BASE_IMAGE_PROFILE}/${user.profile_picture}?v=${forceUpdate}-${new Date().getTime()}`}
                   alt="Profile"
                   fill
                   className="object-cover"
+                  unoptimized={true}
+                  key={`profile-${user.profile_picture}-${forceUpdate}-${new Date().getTime()}`}
                 />
               ) : (
-                <Image src="/image/profile.jpg" alt="Default Profile" fill className="object-cover" />
+                <Image
+                  src="/image/profile.jpg"
+                  alt="Default Profile"
+                  fill
+                  className="object-cover"
+                  unoptimized={true}
+                />
               )}
             </div>
             <div className="flex-1">
