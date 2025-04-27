@@ -1,31 +1,14 @@
-"use client"
+"use server"
 
-import { useRouter } from "next/navigation"
-import { KeyboardEvent, useState } from "react"
+import { redirect } from "next/navigation"
 
+export async function searchUsers(formData: FormData) {
+  const searchTerm = formData.get("search")?.toString() || ""
 
-type Props = {
-    url: string,
-    search: string
- }
+  const params = new URLSearchParams()
+  if (searchTerm) {
+    params.set("search", searchTerm)
+  }
 
- const Search = ({ url, search }: Props) => {
-    const [keyword, setKeyword] = useState<string>(search)
-    const router = useRouter()
- 
- 
-    const handleSearch = (e: KeyboardEvent<HTMLInputElement>) => {
-        e.preventDefault()
-        router.push(`${url}?search=${keyword}`)
-    }
- 
- 
-    return (
-        <input type="text" id="keyword" value={keyword} onChange={e => setKeyword(e.target.value)}
-            className={`text-sm w-full rounded-md p-2 bg-slate-50 border border-secondary focus:border-primary focus:outline-none`}
-            placeholder="Search" onKeyUp={handleSearch} />
-    )
- }
- export default Search
- 
-  
+  redirect(`/manager/user?${params.toString()}`)
+}

@@ -1,97 +1,173 @@
-"use client";
-import { IUser } from "@/app/types"
-import { BASE_API_URL } from "@/global"
-import { drop } from "@/lib/api-bridge"
-import { getCookie } from "@/lib/client-cookie"
-import { useRouter } from "next/navigation"
-import { FormEvent, useState } from "react"
-import { toast, ToastContainer } from "react-toastify"
-import { ButtonPrimary, ButtonDanger } from "@/components/button"
-import Modal from "@/components/modal"
+import { getCookies } from "@/lib/server-cookies"
+import { BASE_API_URL, BASE_IMAGE_PROFILE } from "@/global"
+import { redirect } from "next/navigation"
+import Link from "next/link"
+import Image from "next/image"
+import { AlertTriangle, ArrowLeft, Trash2 } from "lucide-react"
+import type { IUser } from "@/app/types"
 
-const DeleteUser = ({ selectedUser }: { selectedUser: IUser }) => {
-    const [isShow, setIsShow] = useState<boolean>(false)
-    const [user, setUser] = useState<IUser>({...selectedUser})
-    const router = useRouter()
-    const TOKEN = getCookie("token") || ""
+async function getUser(id: string): Promise<IUser | null> {
+  try {
+    const TOKEN = await getCookies("token")
+    const response = await fetch(`${BASE_API_URL}/user/${id}`, {
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+      },
+    })
 
-    const openModal = () => {
-        setUser({ ...selectedUser })
-        setIsShow(true)
+    const data = await response.json()
+
+    if (data.status) {
+      return data.data
     }
-
-    const handleSubmit = async (e: FormEvent) => {
-        try {
-            e.preventDefault()
-            const url = `${BASE_API_URL}/user/${selectedUser.id}`
-            const { data } = await drop(url, TOKEN)
-            if (data?.status) {
-                setIsShow(false)
-                toast(data?.message, { hideProgressBar: true, containerId: `toastUser`, type: `success` })
-                setTimeout(() => router.refresh(), 1000)
-            } else {
-                toast(data?.message, { hideProgressBar: true, containerId: `toastUser`, type: `warning` })
-            }
-        } catch (error) {
-            console.log(error);
-            toast(`Something Wrong`, { hideProgressBar: true, containerId: `toastUser`, type: `error` })
-        }
-    }
- 
-
-    return (
-        <div>
-            <ButtonDanger type="button" onClick={() => openModal()}>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                </svg>
-            </ButtonDanger>
-            <Modal isShow={isShow} onClose={state => setIsShow(state)}>
-               <form onSubmit={handleSubmit}>
-                   {/* modal header */}
-                   <div className="sticky top-0 bg-white px-5 pt-5 pb-3 shadow">
-                       <div className="w-full flex items-center">
-                           <div className="flex flex-col">
-                               <strong className="font-bold text-2xl">Delete User</strong>
-                               <small className="text-slate-400 text-sm">Users with existing transaction data cannot be deleted from this page.</small>
-                           </div>
-                           <div className="ml-auto">
-                               <button type="button" className="text-slate-400" onClick={() => setIsShow(false)}>
-                                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                       <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                                   </svg>
-                               </button>
-                           </div>
-                       </div>
-                   </div>
-                   {/* end modal header */}
-
-
-                   {/* modal body */}
-                   <div className="p-5">
-                   Are you sure you want to delete this user {user.name}?
-                   </div>
-                   {/* end modal body */}
-
-
-                   {/* modal footer */}
-                   <div className="w-full p-5 flex rounded-b-2xl shadow">
-                       <div className="flex ml-auto gap-2">
-                           <ButtonDanger type="button" onClick={() => setIsShow(false)}>
-                               Cancel
-                           </ButtonDanger>
-                           <ButtonPrimary type="submit">
-                               Save
-                           </ButtonPrimary>
-                       </div>
-                   </div>
-                   {/* end modal footer */}
-               </form>
-           </Modal>
-
-        </div>
-    )
- 
-   
+    return null
+  } catch (error) {
+    console.error("Error fetching user:", error)
+    return null
+  }
 }
- export default DeleteUser
+
+async function deleteUser(id: string) {
+  "use server"
+
+  try {
+    const TOKEN = await getCookies("token")
+
+    const response = await fetch(`${BASE_API_URL}/user/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+      },
+    })
+
+    const data = await response.json()
+
+    if (data.status) {
+      redirect("/manager/user?success=User deleted successfully")
+    } else {
+      // Handle error case
+      return { error: data.message || "Failed to delete user" }
+    }
+  } catch (error) {
+    console.error("Error deleting user:", error)
+    return { error: "An unexpected error occurred" }
+  }
+}
+
+export default async function DeleteUserPage({ params }: { params: { id: string } }) {
+  const user = await getUser(params.id)
+
+  if (!user) {
+    redirect("/manager/user?error=User not found")
+  }
+
+  const deleteUserWithId = deleteUser.bind(null, params.id)
+
+  return (
+    <div className="container mx-auto px-4 py-6">
+      <div className="max-w-2xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <Link href="/manager/user" className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4">
+            <ArrowLeft className="h-4 w-4 mr-1" />
+            <span>Back to Users</span>
+          </Link>
+          <h1 className="text-3xl font-bold text-gray-900 flex items-center">
+            <AlertTriangle className="h-8 w-8 mr-3 text-red-600" />
+            Delete User
+          </h1>
+          <p className="text-gray-600 mt-2">You are about to permanently delete this user account.</p>
+        </div>
+
+        {/* Confirmation Card */}
+        <div className="bg-white rounded-xl shadow-md overflow-hidden">
+          <div className="p-6">
+            <div className="bg-red-50 border border-red-100 rounded-lg p-4 mb-6">
+              <div className="flex items-center">
+                <AlertTriangle className="h-5 w-5 text-red-600 mr-2 flex-shrink-0" />
+                <p className="text-red-800 font-medium">This action cannot be undone. Please confirm carefully.</p>
+              </div>
+            </div>
+
+            <div className="flex items-center p-4 border border-gray-100 rounded-lg mb-6">
+              <div className="flex-shrink-0 mr-4">
+                {user.profile_picture ? (
+                  <div className="relative h-16 w-16 rounded-full overflow-hidden">
+                    <Image
+                      src={`${BASE_IMAGE_PROFILE}/${user.profile_picture}`}
+                      alt={user.name}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="h-16 w-16 rounded-full bg-blue-100 flex items-center justify-center">
+                    <span className="text-blue-600 font-medium text-xl">
+                      {user.name
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")
+                        .toUpperCase()}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">{user.name}</h3>
+                <p className="text-gray-600">{user.email}</p>
+                <div className="mt-1">
+                  {user.role === "ADMIN" ? (
+                    <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                      Manager
+                    </span>
+                  ) : (
+                    <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                      User
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-yellow-50 border border-yellow-100 rounded-lg p-4 mb-6">
+              <div className="flex">
+                <AlertTriangle className="h-5 w-5 text-yellow-600 mr-2 flex-shrink-0" />
+                <div>
+                  <p className="text-yellow-800 font-medium">Important:</p>
+                  <p className="text-yellow-700 text-sm mt-1">
+                    Users with existing transaction data cannot be deleted. If this user has associated records, the
+                    deletion may fail.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <form action={async (formData) => {
+              const result = await deleteUserWithId();
+              if (result?.error) {
+                console.error(result.error);
+              }
+            }}>
+              <div className="flex justify-end space-x-4 pt-4 border-t border-gray-100">
+                <Link
+                  href="/manager/user"
+                  className="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors"
+                >
+                  Cancel
+                </Link>
+                <button
+                  type="submit"
+                  className="px-6 py-3 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all flex items-center gap-2"
+                >
+                  <Trash2 className="h-5 w-5" />
+                  <span>Delete Permanently</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}

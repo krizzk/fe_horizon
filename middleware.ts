@@ -19,28 +19,28 @@ export const middleware = async (request: NextRequest) => {
         }
 
         // Jika role bukan MANAGER, arahkan ke halaman login
-        if (role !== "MANAGER") {
+        if (role !== "ADMIN") {
             const redirectAdmin = request.nextUrl.clone();
             redirectAdmin.pathname = "/login";
             return NextResponse.redirect(redirectAdmin);
         }
     }
 
-    if (request.nextUrl.pathname.startsWith('/cashier')) {
-        // Jika tidak ada token atau role, arahkan ke halaman login
-        if (!token || !role) {
-            const redirectCashier = request.nextUrl.clone();
-            redirectCashier.pathname = "/login";
-            return NextResponse.redirect(redirectCashier);
-        }
+    // if (request.nextUrl.pathname.startsWith('/cashier')) {
+    //     // Jika tidak ada token atau role, arahkan ke halaman login
+    //     if (!token || !role) {
+    //         const redirectCashier = request.nextUrl.clone();
+    //         redirectCashier.pathname = "/login";
+    //         return NextResponse.redirect(redirectCashier);
+    //     }
 
-        // Jika role bukan CASHIER, arahkan ke halaman login
-        if (role !== "CASHIER") {
-            const redirectCashier = request.nextUrl.clone();
-            redirectCashier.pathname = "/login";
-            return NextResponse.redirect(redirectCashier);
-        }
-    }
+    //     // Jika role bukan CASHIER, arahkan ke halaman login
+    //     if (role !== "USER") {
+    //         const redirectCashier = request.nextUrl.clone();
+    //         redirectCashier.pathname = "/login";
+    //         return NextResponse.redirect(redirectCashier);
+    //     }
+    // }
 
     return NextResponse.next();
 }
@@ -48,7 +48,7 @@ export const middleware = async (request: NextRequest) => {
 export const config = {
     matcher:[
         "/manager/:path*", // menangkap semua route yang dimulai dengan "/manager/"
-        "/cashier/:path*", // menangkap semua route yang dimulai dengan "/cashier/"
+        // "/cashier/:path*", // menangkap semua route yang dimulai dengan "/cashier/"
         "/"                // menangkap route root
     ]
 }

@@ -5,6 +5,7 @@ export interface IUser {
   email : string,
   password : string,
   profile_picture : string,
+  phone_number : number,
   role : string,
   createdAt : string,
   updatedAt : string
@@ -15,10 +16,15 @@ export interface IMenu {
   id: number
   uuid: string
   name: string
+  brand: string
+  Class: string
   price: number
-  picture: string
+  tax: string
+  kilometer: string
+  BPKB: string
+  STNK: string
+  motorbike_picture: string
   description: string
-  category: string
   createdAt: string
   updatedAt: string
 }
