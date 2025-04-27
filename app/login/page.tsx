@@ -76,52 +76,56 @@ const LoginPage = () => {
     }
   }
 
-const handleSignup = async (e: FormEvent) => {
+  const handleSignup = async (e: FormEvent) => {
     try {
-        e.preventDefault()
-        setIsSignupLoading(true)
+      e.preventDefault()
+      setIsSignupLoading(true)
 
-        const url = `${BASE_API_URL}/user/create`
-        const payload = JSON.stringify({
-            name,
-            email: signupEmail,
-            password: signupPassword,
-            role: "USER",
-            phone_number: phoneNumber,
+      // Replace with your actual signup API endpoint
+      const url = `${BASE_API_URL}/user/register`
+      const payload = JSON.stringify({
+        name,
+        email: signupEmail,
+        password: signupPassword,
+        role: "USER", // Always set role to USER
+        phone_number: phoneNumber,
+      })
+
+      const { data } = await axios.post(url, payload, {
+        headers: { "Content-Type": "application/json" },
+      })
+
+      if (data.status === true) {
+        toast(data.message || "Registration successful!", {
+          hideProgressBar: true,
+          containerId: `toastLogin`,
+          type: "success",
+          autoClose: 2000,
         })
 
-        const { data } = await axios.post(url, payload, {
-            headers: { "Content-Type": "application/json" },
-        })
+        // Switch to login form after successful registration
+        setIsLoginForm(true)
 
-        if (data.status === true) {
-            toast(data.message, {
-                hideProgressBar: true,
-                containerId: `toastLogin`,
-                type: "success",
-                autoClose: 2000,
-            })
-
-            setIsLoginForm(true)
-            setEmail(signupEmail)
-        } else {
-            toast(data.message, {
-                hideProgressBar: true,
-                containerId: `toastLogin`,
-                type: "warning",
-            })
-        }
-    } catch (error: any) {
-        const errorMessage = error.response?.data?.message || "Registration failed. Please try again."
-        toast(errorMessage, {
-            hideProgressBar: true,
-            containerId: `toastLogin`,
-            type: "error",
+        // Optionally pre-fill the login form with the registered email
+        setEmail(signupEmail)
+      } else {
+        toast(data.message || "Registration failed", {
+          hideProgressBar: true,
+          containerId: `toastLogin`,
+          type: "warning",
         })
+      }
+    } catch (error) {
+      console.log(error)
+      toast(`Registration failed. Please try again.`, {
+        hideProgressBar: true,
+        containerId: `toastLogin`,
+        type: "error",
+      })
     } finally {
-        setIsSignupLoading(false)
+      setIsSignupLoading(false)
     }
-}
+  }
 
   const toggleForm = () => {
     setIsLoginForm(!isLoginForm)

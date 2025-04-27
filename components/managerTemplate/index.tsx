@@ -7,9 +7,9 @@ import { removeCookie, getCookie } from "@/lib/client-cookie"
 import { useRouter, usePathname } from "next/navigation"
 import type { IUser } from "@/app/types"
 import { BASE_IMAGE_PROFILE } from "@/global"
-import { Menu, LogOut,  } from "lucide-react"
+import { Menu, LogOut, Bell } from "lucide-react"
 import { cn } from "@/lib/utilis"
-import DefaultMenuList from "@/app/manager/menuList"
+import DefaultMenuList from "@/app/user/menuList"
 import { motion, AnimatePresence } from "framer-motion"
 
 type MenuType = {
@@ -19,7 +19,7 @@ type MenuType = {
   label: string
 }
 
-type ManagerProp = {
+type UserProp = {
   children: ReactNode
   id: string
   user?: IUser | null
@@ -27,7 +27,7 @@ type ManagerProp = {
   menuList?: MenuType[] // Make menuList optional
 }
 
-const ManagerTemplate = ({ children, id, title, user, menuList }: ManagerProp) => {
+const UserTemplate = ({ children, id, title, user, menuList }: UserProp) => {
   const [userName, setUserName] = useState<string>("")
   const [sidebarOpen, setSidebarOpen] = useState(false) // Default to closed
   const [isMobile, setIsMobile] = useState(false)
@@ -136,7 +136,7 @@ const ManagerTemplate = ({ children, id, title, user, menuList }: ManagerProp) =
       >
         {/* Sidebar Header */}
         <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-blue-900 to-blue-700 flex items-center">
-          <Link href="/manager/dashboard" className="flex items-center space-x-2 text-white">
+          <Link href="/user/dashboard" className="flex items-center space-x-2 text-white">
             <Image
               src="/image/Logo_Horizon.png"
               alt="Horizon Logo"
@@ -224,14 +224,14 @@ const ManagerTemplate = ({ children, id, title, user, menuList }: ManagerProp) =
             </motion.button>
 
             <div className="relative h-8 w-8 rounded-full overflow-hidden border-2 border-white shadow-sm">
-            {user?.profile_picture ? (
+              {user?.profile_picture ? (
                 <Image
                   src={`${BASE_IMAGE_PROFILE}/${user.profile_picture}?v=${forceUpdate}-${new Date().getTime()}`}
                   alt="Profile"
                   fill
                   className="object-cover"
                   unoptimized={true}
-                  key={`profile-${user.profile_picture}-${forceUpdate}-${new Date().getTime()}`}
+                  key={`header-profile-${user.profile_picture}-${new Date().getTime()}`}
                 />
               ) : (
                 <div className="bg-blue-200 h-full w-full flex items-center justify-center">
@@ -284,4 +284,4 @@ const ManagerTemplate = ({ children, id, title, user, menuList }: ManagerProp) =
   )
 }
 
-export default ManagerTemplate
+export default UserTemplate

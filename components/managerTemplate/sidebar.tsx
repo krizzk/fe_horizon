@@ -2,7 +2,7 @@
 import { type ReactNode, useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import MenuItem from "@/components/managerTemplate/menuItem"
+import MenuItem from "@/components/userTemplate/menuItem"
 import { removeCookie, getCookie } from "@/lib/client-cookie"
 import { useRouter, usePathname } from "next/navigation"
 import type { IUser } from "@/app/types"
@@ -18,16 +18,16 @@ import {
 } from "@/components/ui/sidebar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { User, LogOut, Settings, ChevronDown, Bell } from "lucide-react"
-import MenuList from "@/app/manager/menuList"
+import MenuList from "@/app/user/menuList"
 
-type ManagerProp = {
+type UserProp = {
   children: ReactNode
   id: string
   user: IUser | null
   title: string
 }
 
-const SidebarComponent = ({ children, id, title, user }: ManagerProp) => {
+const SidebarComponent = ({ children, id, title, user }: UserProp) => {
   const [userName, setUserName] = useState<string>("")
   const [forceUpdate, setForceUpdate] = useState(0)
   const router = useRouter()
@@ -119,13 +119,13 @@ const SidebarComponent = ({ children, id, title, user }: ManagerProp) => {
 
                   <div className="mt-3 flex gap-2">
                     <Link
-                      href="/Manager/profile"
+                      href="/User/profile"
                       className="text-xs px-3 py-1 bg-blue-50 text-blue-600 rounded-full hover:bg-blue-100 transition-colors"
                     >
                       View Profile
                     </Link>
                     <Link
-                      href="/Manager/settings"
+                      href="/User/settings"
                       className="text-xs px-3 py-1 bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200 transition-colors"
                     >
                       Settings
@@ -227,13 +227,13 @@ const SidebarComponent = ({ children, id, title, user }: ManagerProp) => {
                     <p className="text-xs text-gray-500">Manager Staff</p>
                   </div>
                   <DropdownMenuItem asChild>
-                    <Link href="/Manager/profile" className="flex items-center gap-2">
+                    <Link href="/User/profile" className="flex items-center gap-2">
                       <User className="h-4 w-4" />
                       <span>Profile</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/Manager/settings" className="flex items-center gap-2">
+                    <Link href="/User/settings" className="flex items-center gap-2">
                       <Settings className="h-4 w-4" />
                       <span>Settings</span>
                     </Link>
