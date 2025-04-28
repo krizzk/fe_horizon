@@ -3,7 +3,7 @@ import CashierTemplate from "@/components/managerTemplate"
 import MenuList from "../menuList"
 
 export const metadata = {
-  title: "Order History | Ordering System",
+  title: "Order History | HORIZON",
   description: "View and manage all food orders",
 }
 

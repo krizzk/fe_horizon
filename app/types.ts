@@ -94,8 +94,15 @@ export interface FavoriteMenu {
   id: number
   name: string
   price: number
-  picture: string
-  category: string
+  motorbike_picture: string
   description?: string
   orderCount: number
+  brand: string
+  Class: string
+  tax: string
+  kilometer: string
+  BPKB: string
+  STNK: string
+  createdAt: string
+  updatedAt: string
 }

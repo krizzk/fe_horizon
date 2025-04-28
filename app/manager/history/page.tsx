@@ -316,9 +316,7 @@ const HistoryPage = () => {
                   <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                     Customer
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                    Table
-                  </th>
+                  
                   <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                     Quantity
                   </th>
@@ -340,7 +338,7 @@ const HistoryPage = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {filteredOrders.map((order) => (
+                {filteredOrders.map((order,) => (
                   <React.Fragment key={order.id}>
                     <motion.tr
                       initial={{ opacity: 0 }}
@@ -364,10 +362,7 @@ const HistoryPage = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm font-medium text-gray-900">{order.table_number}</div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm font-medium text-gray-900">{calculateTotalQuantity(order)}</div>
+                        <div className="text-sm font-medium text-gray-900">{1}</div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="text-sm font-medium text-gray-900">{formatPrice(order.total_price)}</div>
@@ -420,11 +415,11 @@ const HistoryPage = () => {
                                         className="flex items-center p-4 hover:bg-gray-50 transition-colors"
                                       >
                                         <div className="w-14 h-14 bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg overflow-hidden relative flex-shrink-0 mr-4 shadow-sm border border-orange-200">
-                                          {item.Menu?.picture ? (
+                                          {item.Motorbike?.motorbike_picture ? (
                                             <Image
                                               fill
-                                              src={`${BASE_IMAGE_MENU}/${item.Menu.picture}`}
-                                              alt={item.Menu.name}
+                                              src={`${BASE_IMAGE_MENU}/${item.Motorbike.motorbike_picture}`}
+                                              alt={item.Motorbike.name}
                                               className="object-cover"
                                             />
                                           ) : (
@@ -434,17 +429,17 @@ const HistoryPage = () => {
                                           )}
                                         </div>
                                         <div className="flex-1">
-                                          <div className="font-medium text-gray-900">{item.Menu?.name}</div>
+                                          <div className="font-medium text-gray-900">{item.Motorbike?.name}</div>
                                           {item.note && (
                                             <div className="text-sm text-gray-500 mt-1">Note: {item.note}</div>
                                           )}
                                         </div>
                                         <div className="flex items-center">
                                           <div className="text-gray-600 mr-4 bg-gray-100 px-3 py-1 rounded-full text-sm font-medium">
-                                            x{item.quantity}
+                                            x{1}
                                           </div>
                                           <div className="font-semibold text-gray-900">
-                                            {formatPrice( (item.Menu?.price || 0))}
+                                            {formatPrice( (item.Motorbike?.price || 0))}
                                           </div>
                                         </div>
                                       </motion.div>
@@ -456,20 +451,16 @@ const HistoryPage = () => {
                                     <h4 className="text-sm font-semibold text-gray-500 mb-2">Order Information</h4>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                       <div>
-                                        <p className="text-xs text-gray-500">Customer</p>
-                                        <p className="text-sm font-medium">{order.customer}</p>
+                                        <p className="text-xs text-blue-900">Customer</p>
+                                        <p className="text-sm font-medium text-blue-900">{order.userId}</p>
                                       </div>
                                       <div>
-                                        <p className="text-xs text-gray-500">Table Number</p>
-                                        <p className="text-sm font-medium">{order.table_number}</p>
+                                        <p className="text-xs text-blue-900">Payment Method</p>
+                                        <p className="text-sm text-blue-900">{order.payment_method}</p>
                                       </div>
                                       <div>
-                                        <p className="text-xs text-gray-500">Payment Method</p>
-                                        <p className="text-sm font-medium">{order.payment_method}</p>
-                                      </div>
-                                      <div>
-                                        <p className="text-xs text-gray-500">Order Date</p>
-                                        <p className="text-sm font-medium">{formatDate(order.createdAt)}</p>
+                                        <p className="text-xs text-blue-900">Order Date</p>
+                                        <p className="text-sm text-blue-900">{formatDate(order.createdAt)}</p>
                                       </div>
                                     </div>
                                   </div>
@@ -477,9 +468,9 @@ const HistoryPage = () => {
                                     <h4 className="text-sm font-semibold text-gray-500 mb-2">Order Summary</h4>
                                     <div className="space-y-2">
                                       <div className="flex justify-between">
-                                        <span className="text-gray-600">Items:</span>
-                                        <span className="font-medium">
-                                          {calculateTotalQuantity(expandedOrderDetails)}
+                                        <span className="text-blue-900">Items:</span>
+                                        <span className="font-medium text-blue-900">
+                                          {1}
                                         </span>
                                       </div>
                                       <div className="flex justify-between">

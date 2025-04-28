@@ -89,15 +89,15 @@ const formatPrice = (price: number): string => {
   }).format(price)
 }
 
-const getCategoryBadge = (category: string) => {
-  switch (category) {
-    case "SPORT":
-      return <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Sport</span>
-    case "MATIC":
-      return <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Matic</span>
+const getClassBadge = (Class: string) => {
+  switch (Class) {
+    case "CC_150_225":
+      return <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">150cc-225cc</span>
+    case "CC_250_UP":
+      return <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded-full">250cc & up</span>
     default:
       return (
-        <span className="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full">{category}</span>
+        <span className="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full">{Class}</span>
       )
   }
 }
@@ -137,7 +137,7 @@ const Dashboard = () => {
 
   // Prepare chart data
   const chartData = {
-    labels: favoriteMenus.length > 0 ? favoriteMenus.slice(0, 5).map((menu) => menu.name || "Unknown") : [],
+    labels: favoriteMenus.length > 0 ? favoriteMenus.slice(0, 5).map((menu) => menu.brand || "Unknown") : [],
     datasets: [
       {
         label: "Sales Count",
@@ -319,11 +319,11 @@ const Dashboard = () => {
                     className="flex items-center p-4 border border-gray-100 rounded-xl hover:bg-blue-50 transition-colors"
                   >
                     <div className="relative w-16 h-16 bg-gray-100 rounded-lg overflow-hidden mr-4 flex-shrink-0 shadow-md">
-                      {menu.picture ? (
+                      {menu.motorbike_picture ? (
                         <Image
                           fill
-                          src={`${BASE_IMAGE_MENU}/${menu.picture}`}
-                          alt={menu.name || "Motorcycle model"}
+                          src={`${BASE_IMAGE_MENU}/${menu.motorbike_picture}`}
+                          alt={menu.brand || "Motorcycle model"}
                           className="object-cover"
                         />
                       ) : (
@@ -335,10 +335,10 @@ const Dashboard = () => {
                     <div className="flex-1">
                       <div className="flex justify-between items-start">
                         <div>
-                          <h4 className="font-medium text-gray-900">{menu.name || "Unnamed model"}</h4>
+                          <h4 className="font-medium text-gray-900">{menu.brand || "Unnamed model"}</h4>
                           <div className="flex items-center gap-2 mt-1">
                             <p className="text-sm text-gray-500">{formatPrice(menu.price || 0)}</p>
-                            {menu.category && getCategoryBadge(menu.category)}
+                            {menu.Class && getClassBadge(menu.Class)}
                           </div>
                         </div>
                         <div className="flex items-center">
